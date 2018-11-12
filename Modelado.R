@@ -30,6 +30,7 @@ nam <-c("HS_max","HS_min","HS_acu","ppt_max","ppt_min","ppt_acu","tmax","tmin","
 names(clima) <- nam
 rm(files,HS_max,HS_min,HS_acu,ppt_max,ppt_min,ppt_acu,tmax,tmin,tmean,i,HS,prec,
    stack1,startdir,t_max,T_mean,t_min,BH,nam)
+clima <-projectRaster(clima, crs='+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
 
 #Lectura de covariables organismos
 load("H:/TESIS/2018/RDATA/organismos.RData")
@@ -37,3 +38,5 @@ organismos <- stack(ndvi,ci)
 nam <- c("ndvi","ci")
 names(organismos) <- nam
 rm(ci,nam,ndvi)
+organismos <-projectRaster(organismos, crs='+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
+
