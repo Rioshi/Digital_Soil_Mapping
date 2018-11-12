@@ -40,3 +40,21 @@ names(organismos) <- nam
 rm(ci,nam,ndvi)
 organismos <-projectRaster(organismos, crs='+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
 
+#Lectura de covariables litologia
+load("H:/TESIS/2018/RDATA/aster.RData")
+qri <- (aster[[11]]*aster[[11]])/(aster[[10]]*aster[[12]]) #quartz index
+carb <- aster[[13]]/aster[[12]] #carbonate index
+mafic <- (aster[[12]])*(aster[[14]]^3)/(aster[[13]]^4) #mafic index
+lito <- stack(qri,carb,mafic)
+nam <- c("qri","carb","mafic")
+names(lito) <- nam
+rm(qri,carb,mafic,aster)
+lito <- projectRaster(lito, crs='+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
+
+#lectura unidades homogeneas de terreno
+uhomo <- shapefile("H:/TESIS/2018/Unidades_homogeneas/uhomo.shp")
+
+#Lectura de calicatas
+cali <- read.csv("H:/TESIS/2018/calic.csv",header = TRUE)
+coordinates(cali) = ~X+Y
+proj4string(cali) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
