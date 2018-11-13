@@ -100,6 +100,22 @@ ks.test(x=na.omit(relieve$Slope),y=cali$Slope)
 ks.test(x=na.omit(relieve$Aspect),y=cali$Aspect)
 ks.test(x=na.omit(relieve$Convergence_Index),y=cali$Convergence_Index)
 ks.test(x=na.omit(relieve$Cross.Sectional_Curvature),y=cali$Cross.Sectional_Curvature)
+ks.test(x=na.omit(relieve$Longitudinal_Curvature),y=cali$Longitudinal_Curvature)
+ks.test(x=na.omit(relieve$LS_Factor),y=cali$LS_Factor)
+ks.test(x=na.omit(relieve$Relative_Slope_Position),y=cali$Relative_Slope_Position)
+ks.test(x=na.omit(relieve$Topographic_Wetness_Index),y=cali$Topographic_Wetness_Index)
+ks.test(x=na.omit(relieve$Valley_Depth),y=cali$Valley_Depth)
+
+ks.test(x=na.omit(clima$HS_acu),y=cali$HS_acu)
+ks.test(x=na.omit(clima$ppt_acu),y=cali$ppt_acu)
+ks.test(x=na.omit(clima$tmean),y=cali$tmean)
+
+ks.test(x=na.omit(lito$qri),y=cali$qri)
+ks.test(x=na.omit(lito$carb),y=cali$carb)
+ks.test(x=na.omit(lito$mafic),y=cali$mafic)
+
+ks.test(x=na.omit(organismos$ndvi),y=cali$ndvi)
+ks.test(x=na.omit(organismos$ci),y=cali$ci)
 
 
 #Histograma / density plots POBLACION vs MUESTRA
@@ -121,6 +137,114 @@ hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="O
      prob=TRUE,ylim=c(0,0.15),xlab="ks:  D = 0.106   p-valor = 0.47",ylab="Densidad",breaks=100)
 lines(density(cali$Convergence_Index,bw = "sj"),col="red",lwd = 3)
 
-hist(na.omit(relieve$Cross.Sectional_Curvature),maxpixels=1500000,xlim=c(-0.1,0.1),main="Orientación",col="gray",
+hist(na.omit(relieve$Cross.Sectional_Curvature),maxpixels=1500000,xlim=c(-0.1,0.1),main="Curvatura plana",col="gray",
      prob=TRUE,ylim=c(0,30),xlab="ks:  D = 0.124   p-valor = 0.28",ylab="Densidad",breaks=100)
 lines(density(cali$Cross.Sectional_Curvature,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(relieve$Longitudinal_Curvature),maxpixels=1500000,xlim=c(-0.15,0.15),main="Curvatura de perfil",col="gray",
+     prob=TRUE,ylim=c(0,25),xlab="ks:  D = 0.125   p-valor = 0.273",ylab="Densidad",breaks=100)
+lines(density(cali$Longitudinal_Curvature,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(relieve$LS_Factor),maxpixels=1500000,xlim=c(0,40),main="Factor LS",col="gray",
+     prob=TRUE,ylim=c(0,0.10),xlab="ks:  D = 0.125   p-valor = 0.273",ylab="Densidad",breaks=100)
+lines(density(cali$LS_Factor,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(relieve$Relative_Slope_Position),maxpixels=1500000,xlim=c(0,1),main="Posición relativa a la pendiente",col="gray",
+     prob=TRUE,ylim=c(0,10),xlab="ks:  D = 0.278   p-valor < 0.05",ylab="Densidad",breaks=50)
+lines(density(cali$Relative_Slope_Position,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(relieve$Topographic_Wetness_Index),maxpixels=1500000,xlim=c(0,20),main="Índice topográfico de humedad",col="gray",
+     prob=TRUE,ylim=c(0,0.4),xlab="ks:  D = 0.192   p-valor = 0.018",ylab="Densidad",breaks=50)
+lines(density(cali$Topographic_Wetness_Index,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(relieve$Valley_Depth),maxpixels=1500000,xlim=c(0,700),main="Profundidad de los valles",col="gray",
+     prob=TRUE,ylim=c(0,0.008),xlab="ks:  D = 0.189   p-valor = 0.019",ylab="Densidad",breaks=50)
+lines(density(cali$Valley_Depth,bw = "sj"),col="red",lwd = 3)
+
+###########
+hist(na.omit(clima$tmean),maxpixels=1500000,xlim=c(5,18),main="Temperatura media anual",col="gray",
+     prob=TRUE,ylim=c(0,0.25),xlab="ks:  D = 0.130   p-valor = 0.191",ylab="Densidad",breaks=50)
+lines(density(cali$tmean,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(clima$ppt_acu),maxpixels=1500000,xlim=c(100,700),main="Precipitación anual acumulada",col="gray",
+     prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.161   p-valor = 0.282",ylab="Densidad",breaks=50)
+lines(density(cali$ppt_acu,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(clima$HS_acu),maxpixels=1500000,xlim=c(1050,1500),main="Evapotranspiración anual acumulada",col="gray",
+     prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.213   p-valor = 0.067",ylab="Densidad",breaks=50)
+lines(density(cali$HS_acu,bw = "sj"),col="red",lwd = 3)
+##########
+
+hist(na.omit(lito$qri),maxpixels=1500000,xlim=c(0.995,1.010),main="Índice de Cuarzo",col="gray",
+     prob=TRUE,ylim=c(0,350),xlab="ks:  D = 0.165   p-valor = 0.061",ylab="Densidad",breaks=100)
+lines(density(cali$qri,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(lito$carb),maxpixels=1500000,xlim=c(1,1.010),main="Índice de carbonatos",col="gray",
+     prob=TRUE,ylim=c(0,300),xlab="ks:  D = 0.171   p-valor = 0.047",ylab="Densidad",breaks=100)
+lines(density(cali$carb,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(lito$mafic),maxpixels=1500000,xlim=c(0.98,1.01),main="Índice máfico",col="gray",
+     prob=TRUE,ylim=c(0,200),xlab="ks:  D = 0.152   p-valor = 0.106",ylab="Densidad",breaks=100)
+lines(density(cali$mafic,bw = "sj"),col="red",lwd = 3)
+############
+
+hist(na.omit(organismos$ndvi),maxpixels=1500000,xlim=c(0,1),main="Índice Diferenciado de Vegetación Normalizado",col="gray",
+     prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.201   p-valor = 0.012",ylab="Densidad",breaks=100)
+lines(density(cali$ndvi,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(organismos$ci),maxpixels=1500000,xlim=c(0.5,2),main="Costra biológica",col="gray",
+     prob=TRUE,ylim=c(0,6),xlab="ks:  D = 0.266   p-valor < 0.05",ylab="Densidad",breaks=100)
+lines(density(cali$ci,bw = "sj"),col="red",lwd = 3)
+
+
+######################################
+#MODELADO#
+library(caret)
+library("klaR")
+library(e1071)
+
+
+levels(cali$ST) <- make.names(levels(factor(cali$ST)))
+
+#Prueba variables
+nearZeroVar(cali[,5:23],saveMetrics = TRUE)
+
+###Covariables remuestreo
+dem <- resample(dem, imageL8$B, method="bilinear")
+relieve2 <- resample(relieve,organismos$ndvi, method="bilinear")
+clima2 <- resample(clima,organismos$ndvi, method="bilinear")
+lito2 <- resample(lito,organismos$ndvi, method="bilinear")
+covariables <- stack(organismos,relieve2,clima2,lito2)
+
+
+#Cross Validation
+set.seed(25)
+setControl <- trainControl(
+  method = "repeatedcv",
+  number = 5,
+  repeats = 10,
+  verboseIter = FALSE,
+  classProbs=TRUE, 
+  sampling = "up"
+)
+
+#Naive Bayes Parameters
+grid <- data.frame(fL=2, usekernel=TRUE,adjust=1)
+#Naive Bayes Model
+model <- train(ST~.,data=cali[,4:22],'nb',
+               metric=c("Accuracy","Kappa"),
+               tuneGrid=grid,
+               trControl=setControl,
+               na.action = na.omit
+               )
+
+#Prediction of classes
+mm <- predict(object=covariables, model=model, fun=predict, type="raw") #type raw = probability, prob = class
+mm@data@attributes
+
+mm2 <- stack(predict(object=covariables, model=model, fun=predict.train, type="prob"))
+
+#Importancia de la variable
+plot(varImp(model))
+
+
