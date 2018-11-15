@@ -95,27 +95,27 @@ abs(correlation(cali[,5:22])$`correlation`)>0.5 #reobtener las covariables luego
 
 
 #Kolgomorov-Smirnoff
-ks.test(x=na.omit(relieve$MDE),y=cali$MDE)
-ks.test(x=na.omit(relieve$Slope),y=cali$Slope)
-ks.test(x=na.omit(relieve$Aspect),y=cali$Aspect)
-ks.test(x=na.omit(relieve$Convergence_Index),y=cali$Convergence_Index)
-ks.test(x=na.omit(relieve$Cross.Sectional_Curvature),y=cali$Cross.Sectional_Curvature)
-ks.test(x=na.omit(relieve$Longitudinal_Curvature),y=cali$Longitudinal_Curvature)
-ks.test(x=na.omit(relieve$LS_Factor),y=cali$LS_Factor)
-ks.test(x=na.omit(relieve$Relative_Slope_Position),y=cali$Relative_Slope_Position)
-ks.test(x=na.omit(relieve$Topographic_Wetness_Index),y=cali$Topographic_Wetness_Index)
-ks.test(x=na.omit(relieve$Valley_Depth),y=cali$Valley_Depth)
+ks.test(x=scale(na.omit(relieve$MDE)),y=scale(cali$MDE))
+ks.test(x=scale(na.omit(relieve$Slope)),y=scale(cali$Slope))
+ks.test(x=scale(na.omit(relieve$Aspect)),y=scale(cali$Aspect))
+ks.test(x=scale(na.omit(relieve$Convergence_Index)),y=scale(cali$Convergence_Index))
+ks.test(x=scale(na.omit(relieve$Cross.Sectional_Curvature)),y=scale(cali$Cross.Sectional_Curvature))
+ks.test(x=scale(na.omit(relieve$Longitudinal_Curvature)),y=scale(cali$Longitudinal_Curvature))
+ks.test(x=scale(na.omit(relieve$LS_Factor)),y=scale(cali$LS_Factor))
+ks.test(x=scale(na.omit(relieve$Relative_Slope_Position)),y=scale(cali$Relative_Slope_Position))
+ks.test(x=scale(na.omit(relieve$Topographic_Wetness_Index)),y=scale(cali$Topographic_Wetness_Index))
+ks.test(x=scale(na.omit(relieve$Valley_Depth)),y=scale(cali$Valley_Depth))
 
-ks.test(x=na.omit(clima$HS_acu),y=cali$HS_acu)
-ks.test(x=na.omit(clima$ppt_acu),y=cali$ppt_acu)
-ks.test(x=na.omit(clima$tmean),y=cali$tmean)
+ks.test(x=scale(na.omit(clima$HS_acu)),y=scale(cali$HS_acu))
+ks.test(x=scale(na.omit(clima$ppt_acu)),y=scale(cali$ppt_acu))
+ks.test(x=scale(na.omit(clima$tmean)),y=scale(cali$tmean))
 
-ks.test(x=na.omit(lito$qri),y=cali$qri)
-ks.test(x=na.omit(lito$carb),y=cali$carb)
-ks.test(x=na.omit(lito$mafic),y=cali$mafic)
+ks.test(x=scale(na.omit(lito$qri)),y=scale(cali$qri))
+ks.test(x=scale(na.omit(lito$carb)),y=scale(cali$carb))
+ks.test(x=scale(na.omit(lito$mafic)),y=scale(cali$mafic))
 
-ks.test(x=na.omit(organismos$ndvi),y=cali$ndvi)
-ks.test(x=na.omit(organismos$ci),y=cali$ci)
+ks.test(x=scale(na.omit(organismos$ndvi)),y=scale(cali$ndvi))
+ks.test(x=scale(na.omit(organismos$ci)),y=scale(cali$ci))
 
 
 #Histograma / density plots POBLACION vs MUESTRA
@@ -133,7 +133,7 @@ hist(na.omit(relieve$Aspect),maxpixels=1500000,xlim=c(0,380),main="Orientación",
      prob=TRUE,ylim=c(0,0.006),xlab="ks:  D = 0.0511   p-valor > 0.05",ylab="Densidad")
 lines(density(cali$Aspect),col="red",lwd = 3)
 
-hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="Orientación",col="gray",
+hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="Índice de Convergencia",col="gray",
      prob=TRUE,ylim=c(0,0.15),xlab="ks:  D = 0.106   p-valor = 0.47",ylab="Densidad",breaks=100)
 lines(density(cali$Convergence_Index,bw = "sj"),col="red",lwd = 3)
 
