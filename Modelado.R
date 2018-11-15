@@ -248,3 +248,7 @@ mm2 <- stack(predict(object=covariables, model=model, fun=predict.train, type="p
 plot(varImp(model))
 
 
+
+###Resultados
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE), 
+       widths=c(1,1), heights=c(1,1))
