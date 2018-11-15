@@ -1,7 +1,7 @@
 ##Lectura de datos##
 library(raster)
 library(caret)
-setwd("H:/TESIS/2018")
+setwd("E:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -15,7 +15,7 @@ setwd(startdir)
 relieve <- dropLayer(relieve, i=c(2,5,6,9,11,12,13,16,18,20))
 
 #Lectura de covariables Clima
-load("H:/TESIS/2018/RDATA/clima.RData")
+load("RDATA/clima.RData")
 HS_max <- max(HS)
 HS_min <- min(HS)
 HS_acu <- sum(HS)
@@ -35,7 +35,7 @@ clima <- dropLayer(clima, i=c(1,2,4,5,7,8))
 
 
 #Lectura de covariables organismos
-load("H:/TESIS/2018/RDATA/organismos.RData")
+load("RDATA/organismos.RData")
 organismos <- stack(ndvi,ci)
 nam <- c("ndvi","ci")
 names(organismos) <- nam
@@ -43,7 +43,7 @@ rm(ci,nam,ndvi)
 organismos <-projectRaster(organismos, crs='+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
 
 #Lectura de covariables litologia
-load("H:/TESIS/2018/RDATA/aster.RData")
+load("RDATA/aster.RData")
 qri <- (aster[[11]]*aster[[11]])/(aster[[10]]*aster[[12]]) #quartz index
 carb <- aster[[13]]/aster[[12]] #carbonate index
 mafic <- (aster[[12]])*(aster[[14]]^3)/(aster[[13]]^4) #mafic index
@@ -54,10 +54,10 @@ rm(qri,carb,mafic,aster)
 lito <- projectRaster(lito, crs='+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
 
 #lectura unidades homogeneas de terreno
-uhomo <- shapefile("H:/TESIS/2018/Unidades_homogeneas/uhomo.shp")
+uhomo <- shapefile("Unidades_homogeneas/uhomo.shp")
 
 #Lectura de calicatas
-cali <- read.csv("H:/TESIS/2018/calic.csv",header = TRUE)
+cali <- read.csv("calic.csv",header = TRUE)
 cali.sp <- cali
 coordinates(cali.sp) = ~X+Y
 proj4string(cali.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
