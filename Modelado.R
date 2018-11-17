@@ -1,7 +1,7 @@
 ##Lectura de datos##
 library(raster)
 library(caret)
-setwd("H:/TESIS/2018")
+setwd("E:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -96,13 +96,26 @@ lito.corr <- layerStats(lito,stat="pearson",na.rm = TRUE)
 nearZeroVar(cali[,5:23],saveMetrics = TRUE)
 
 ###Covariables remuestreo
-dem <- resample(dem, imageL8$B, method="bilinear")
 relieve2 <- resample(relieve,organismos$ndvi, method="bilinear")
 clima2 <- resample(clima,organismos$ndvi, method="bilinear")
 lito2 <- resample(lito,organismos$ndvi, method="bilinear")
 covariables <- stack(organismos,relieve2,clima2,lito2)
 names(covariables) <- c("NDVI","CI","Or","Icv","Cpa","Cpe","LS","Elv","Psp","Pdt","Ith","Pv","ET","Pt","Tm","Icu","Ica","Ima")
 
+#Estadisticas basicas
+
+
+media <- cellStats(x=covariables,stat='mean',na.rm=TRUE,asSample=FALSE)
+sd <- cellStats(x=covariables,stat='sd',na.rm=TRUE,asSample=FALSE)
+CV <- sd*100/abs(media)
+library(psych)
+ske <- skew(as.data.frame(covariables),na.rm=TRUE) #asimetria
+sts <- cbind(media,sd,CV,ske)
+write.csv(x=sts,file="estadisticas_basicas.csv")
+
+
+#Correlacion entre covariables
+options("scipen"=100, "digits"=5)
 covar.corr <- layerStats(covariables,stat="pearson",na.rm = TRUE,asSample = FALSE)
 
 library(corrplot)
@@ -121,13 +134,17 @@ col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA")
 #library(agricolae)
 #correl.matrix <- correlation(covar.matrix)
 
-
+#Guardarlo en 1500 width ,,, heght 1300 
 corrplot(covar.corr$`pearson correlation coefficient`, method="color", col=col(10),  
-         type="lower", order="original", number.digits = 2, number.cex = 0.7, tl.cex = 0.9,
+         type="lower", order="original", number.digits = 2, number.cex = 1.2, tl.cex = 1.5,cl.cex=1.5,
          addCoef.col = "black",
          tl.col="black", tl.srt=45,
          diag=FALSE 
 )
+
+
+
+
 
 #Kolgomorov-Smirnoff
 ks.test(x=scale(na.omit(relieve$MDE)),y=scale(cali$MDE))
@@ -243,22 +260,24 @@ levels(cali$ST) <- make.names(levels(factor(cali$ST)))
 
 
 #Cross Validation
+
 set.seed(25)
 setControl <- trainControl(
   method = "repeatedcv",
   number = 5,
-  repeats = 10,
+  repeats = 1,
   verboseIter = FALSE,
   classProbs=TRUE, 
   sampling = "up"
 )
 
 #Naive Bayes Parameters
-grid <- data.frame(fL=2, usekernel=TRUE,adjust=1)
+grid <- data.frame(fL=1000, usekernel=TRUE,adjust=1)
 #Naive Bayes Model
 model <- train(ST~.,data=cali[,4:22],'nb',
                metric=c("Accuracy","Kappa"),
                tuneGrid=grid,
+               preProcess=c("center", "scale", "YeoJohnson"),
                trControl=setControl,
                na.action = na.omit
                )
@@ -280,3 +299,7 @@ layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE),
 
 layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE), 
        widths=c(1,1), heights=c(1,1))
+
+
+
+
