@@ -1,7 +1,7 @@
 ##Lectura de datos##
 library(raster)
 library(caret)
-setwd("E:/TESIS/2018")
+setwd("H:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()

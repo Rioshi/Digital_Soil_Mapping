@@ -53,6 +53,15 @@ for(i in 1:length(files)) {
   HS[[i]] <- stack(files[i])}
 HS <- do.call(stack,HS)
 
+#Radiacion
+setwd("H:/Worldclim2/Rad")
+files <- list.files(pattern=".tif$")
+Rd <- list()
+for(i in 1:length(files)) {
+  Rd[[i]] <- stack(files[i])}
+Rd <- do.call(stack,Rd)
+
+#Vapor de 
 ####################CALCULOS NO VIABLES#################################
 #Latitud
 latit <- raster("E:/Worldclim2/latitud.tif")
@@ -85,6 +94,7 @@ t_min <- crop(t_min,aoi)
 T_mean <- crop(T_mean,aoi)
 prec <- crop(prec,aoi)
 HS <- crop(HS,aoi)
+Rd <- crop()
 
 #Balance hidrico
 BH <- list()
