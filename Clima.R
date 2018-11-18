@@ -1,4 +1,4 @@
-setwd("E:/Worldclim2")
+setwd("H:/Worldclim2")
 
 ## Leer lista de paquetes ##
 library(raster)
@@ -12,7 +12,7 @@ star.dir <- getwd()
 
 
 #Temperatura maxima
-setwd("E:/Worldclim2/Tmax")
+setwd("H:/Worldclim2/Tmax")
 files <- list.files(pattern=".tif$")
 t_max <- list()
 for(i in 1:length(files)) {
@@ -22,7 +22,7 @@ t_max <- do.call(stack,t_max)
 
 
 #Temperatura minima
-setwd("E:/Worldclim2/Tmin")
+setwd("H:/Worldclim2/Tmin")
 files <- list.files(pattern=".tif$")
 t_min <- list()
 for(i in 1:length(files)) {
@@ -37,7 +37,7 @@ T_mean <- do.call(stack,T_mean)
 
 
 #Precipitacion
-setwd("E:/Worldclim2/Prec")
+setwd("H:/Worldclim2/Prec")
 files <- list.files(pattern=".tif$")
 files <- files[-13]
 prec <- list()
@@ -46,7 +46,7 @@ for(i in 1:length(files)) {
 prec <- do.call(stack,prec)
 
 #Evapotranspiracion 
-setwd("E:/Worldclim2/ET_hagreveas")
+setwd("H:/Worldclim2/ET_hagreveas")
 files <- list.files(pattern=".tif$")
 HS <- list()
 for(i in 1:length(files)) {
@@ -61,10 +61,28 @@ for(i in 1:length(files)) {
   Rd[[i]] <- stack(files[i])}
 Rd <- do.call(stack,Rd)
 
-#Vapor de 
+#Vapor de agua
+setwd("H:/Worldclim2/Humedad")
+files <- list.files(pattern=".tif$")
+Hd <- list()
+for(i in 1:length(files)) {
+  Hd[[i]] <- stack(files[i])}
+Hd <- do.call(stack,Hd)
+
+#Velocidad de tiento
+setwd("H:/Worldclim2/Viento")
+files <- list.files(pattern=".tif$")
+Wind <- list()
+for(i in 1:length(files)) {
+  Wind[[i]] <- stack(files[i])}
+Wind <- do.call(stack,Wind)
+
+
+
+
 ####################CALCULOS NO VIABLES#################################
 #Latitud
-latit <- raster("E:/Worldclim2/latitud.tif")
+latit <- raster("H:/Worldclim2/latitud.tif")
 
 #Evapotranspiracion con Rsaga
 library(RSAGA)
@@ -86,7 +104,7 @@ rsaga.geoprocessor(lib = "climate_tools", module = "ETpot (after Hargreaves, Gri
 ####################FIN DE CALCULOS NO VIABLES#################################
 
 #Corte de capas
-aoi <- shapefile("E:/TESIS/2018/Limites/extension_corte/Grid System Extent.shp")
+aoi <- shapefile("H:/TESIS/2018/Limites/extension_corte/Grid System Extent.shp")
 aoi <- spTransform(aoi, crs(t_max[[1]]))
 
 t_max <- crop(t_max,aoi)
@@ -94,7 +112,9 @@ t_min <- crop(t_min,aoi)
 T_mean <- crop(T_mean,aoi)
 prec <- crop(prec,aoi)
 HS <- crop(HS,aoi)
-Rd <- crop()
+Rd <- crop(Rd,aoi)
+Hd <- crop(Hd,aoi)
+Wind <- crop(Wind,aoi)
 
 #Balance hidrico
 BH <- list()
@@ -116,4 +136,4 @@ names(BH) <- nam_BH
 
 
 ###Guardar los objetos
-save(BH,HS,prec,T_mean,t_min,t_max, file = "E:/TESIS/2018/RDATA/clima.RData")
+save(HS,prec,T_mean,t_min,t_max,Rd,Hd,Wind, file = "H:/TESIS/2018/RDATA/clima.RData")

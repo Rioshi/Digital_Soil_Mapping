@@ -18,22 +18,18 @@ relieve <- dropLayer(relieve, i=c(2,5,6,9,11,12,13,16,18,20))
 
 #Lectura de covariables Clima
 load("RDATA/clima.RData")
-HS_max <- max(HS)
-HS_min <- min(HS)
 HS_acu <- sum(HS)
-ppt_max <- max(prec)
-ppt_min <- min(prec)
 ppt_acu <- sum(prec)
-tmax <- mean(t_max)
-tmin <- mean(t_min)
 tmean <- mean(T_mean)
-clima <- stack(HS_max,HS_min,HS_acu,ppt_max,ppt_min,ppt_acu,tmax,tmin,tmean)
-nam <-c("HS_max","HS_min","HS_acu","ppt_max","ppt_min","ppt_acu","tmax","tmin","tmean")
+wind.mean <- mean(Wind)
+Hd.mean <- mean(Hd)
+Rd.mean <- mean(Rd)
+clima <- stack(HS_acu,ppt_acu,tmean,wind.mean,Hd.mean,Rd.mean)
+nam <-c("HS_acu","ppt_acu","tmean","wind","Hd","Rd")
 names(clima) <- nam
-rm(files,HS_max,HS_min,HS_acu,ppt_max,ppt_min,ppt_acu,tmax,tmin,tmean,i,HS,prec,
-   stack1,startdir,t_max,T_mean,t_min,BH,nam)
+rm(files,HS_acu,ppt_acu,tmean,i,HS,prec,
+   stack1,startdir,t_max,T_mean,t_min,BH,nam,Hd,Hd.mean,Rd,Rd.mean,Wind,wind.mean)
 clima <-projectRaster(clima, crs='+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
-clima <- dropLayer(clima, i=c(1,2,4,5,7,8))
 
 
 #Lectura de covariables organismos
