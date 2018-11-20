@@ -1,7 +1,7 @@
 ##Lectura de datos##
 library(raster)
 library(caret)
-setwd("H:/TESIS/2018")
+setwd("E:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -96,7 +96,11 @@ relieve2 <- resample(relieve,organismos$ndvi, method="bilinear")
 clima2 <- resample(clima,organismos$ndvi, method="bilinear")
 lito2 <- resample(lito,organismos$ndvi, method="bilinear")
 covariables <- stack(organismos,relieve2,clima2,lito2)
-names(covariables) <- c("NDVI","CI","Or","Icv","Cpa","Cpe","LS","Elv","Psp","Pdt","Ith","Pv","ET","Pt","Tm","Icu","Ica","Ima")
+nam <- c("ndvi","ci","Asp","Cvi","Csc","Lc","LS","ele","Rsp","Sp","Twi",
+         "Vd","ET","Pt","Tm","Wi","Hd","Rd","Qr","Ca","Ma")
+names(covariables) <- nam
+
+
 
 #Estadisticas basicas
 
