@@ -286,7 +286,23 @@ model <- train(ST~.,data=cali[,4:22],'nb',
 mm <- predict(object=covariables, model=model, fun=predict, type="raw") #type raw = probability, prob = class
 mm@data@attributes
 
-mm2 <- stack(predict(object=covariables, model=model, fun=predict.train, type="prob"))
+#Prediccion de clases como dataframe
+covariables.DF <- as.data.frame(covariables,xy=TRUE,na.rm=TRUE)
+mm2 <- predict(object=model,newdata=covariables.DF,type="prob")
+
+rnam <- row.names(mm2)
+rnam2 <- row.names(covariables.DF)
+mm2["ID"] <- rnam
+covariables.DF["ID"] <- rnam2
+
+ST <- merge(covariables.DF,mm2,by="ID")
+save(ST, file = "E:/TESIS/2018/ST.RData")
+load("E:/TESIS/2018/ST.RData")
+
+AH <- ST[,c(2,3,25)]
+coordinates(AH) <- ~ x + y
+gridded(AH) <- TRUE
+rasterAH <- raster(AH)
 
 #Importancia de la variable
 plot(varImp(model))
