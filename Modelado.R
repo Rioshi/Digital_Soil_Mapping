@@ -1,7 +1,7 @@
 ##Lectura de datos##
 library(raster)
 library(caret)
-setwd("E:/TESIS/2018")
+setwd("H:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -282,6 +282,10 @@ model <- train(ST~.,data=cali[,4:22],'nb',
                na.action = na.omit
                )
 
+#Importancia de la variable
+plot(varImp(model))
+
+
 #Prediction of classes
 mm <- predict(object=covariables, model=model, fun=predict, type="raw") #type raw = probability, prob = class
 mm@data@attributes
@@ -289,6 +293,7 @@ mm@data@attributes
 #Prediccion de clases como dataframe
 covariables.DF <- as.data.frame(covariables,xy=TRUE,na.rm=TRUE)
 mm2 <- predict(object=model,newdata=covariables.DF,type="prob")
+
 
 rnam <- row.names(mm2)
 rnam2 <- row.names(covariables.DF)
@@ -350,10 +355,35 @@ plot(rasterToH,main="Torriorthentic Haplustolls")
 plot(rasterTyH,main="Typic Haplocambids")
 plot(rasterTyT,main="Typic Torriorthents")
 
+Probs <- stack(rasterAH,rasterFH,rasterPH,rasterSH,rasterToH,rasterTyH,rasterTyT)
+
+mm3 <- predict(object = model,newdata=covariables.DF,type = "raw",threshold = 0.01)
+covariables.DF["ST"] <- as.numeric(mm3)
+class.ST <- covariables.DF[,c(1,2,24)]
+coordinates(class.ST) <- ~ x + y
+gridded(class.ST) <- TRUE
+rasterclass.ST <- raster(class.ST)
+plot(rasterclass.ST)
 
 
-#Importancia de la variable
-plot(varImp(model))
+##PLOT rasters
+library(rasterVis)
+levelplot(Probs)
+
+levelplot(Probs, layers = 1, margin = list(FUN = 'mean'), contour=TRUE,par.settings = magmaTheme)
+
+levelplot(Probs, layers = 5,par.settings = plasmaTheme)
+levelplot(Probs, layers = 5,par.settings = magmaTheme)
+levelplot(Probs, layers = 5,par.settings = rasterTheme)
+levelplot(Probs, layers = 5,par.settings = PuOrTheme)
+levelplot(Probs, layers = 5,par.settings = RdBuTheme)
+levelplot(Probs, layers = 5,par.settings = streamTheme)
+levelplot(Probs, layers = 5,par.settings = viridisTheme)
+#levelplot(Probs, layers = 5,par.settings = xscale.raster)
+#levelplot(Probs, layers = 5,par.settings = xscale.raster.subticks)
+levelplot(Probs, layers = 5,par.settings = YlOrRdTheme)
+#levelplot(Probs, layers = 5,par.settings = yscale.raster)
+#levelplot(Probs, layers = 5,par.settings = yscale.raster.subticks)
 
 
 
