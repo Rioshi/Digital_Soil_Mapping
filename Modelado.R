@@ -304,6 +304,54 @@ coordinates(AH) <- ~ x + y
 gridded(AH) <- TRUE
 rasterAH <- raster(AH)
 
+FH <- ST[,c(2,3,26)]
+coordinates(FH) <- ~ x + y
+gridded(FH) <- TRUE
+rasterFH <- raster(FH)
+
+
+PH <- ST[,c(2,3,27)]
+coordinates(PH) <- ~ x + y
+gridded(PH) <- TRUE
+rasterPH <- raster(PH)
+
+
+SH <- ST[,c(2,3,28)]
+coordinates(SH) <- ~ x + y
+gridded(SH) <- TRUE
+rasterSH <- raster(SH)
+
+
+ToH <- ST[,c(2,3,29)]
+coordinates(ToH) <- ~ x + y
+gridded(ToH) <- TRUE
+rasterToH <- raster(ToH)
+
+
+TyH <- ST[,c(2,3,30)]
+coordinates(TyH) <- ~ x + y
+gridded(TyH) <- TRUE
+rasterTyH <- raster(TyH)
+
+
+TyT <- ST[,c(2,3,31)]
+coordinates(TyT) <- ~ x + y
+gridded(TyT) <- TRUE
+rasterTyT <- raster(TyT)
+
+rm("TyT","TyH","ToH","SH","PH","FH","SH","AH")
+
+
+plot(rasterAH,main="Aridic Haplustolls")
+plot(rasterFH,main="Fluventic Haplocambids")
+plot(rasterPH,main="Pachic Haplustolls")
+plot(rasterSH,main="Sodic Haplocambids")
+plot(rasterToH,main="Torriorthentic Haplustolls")
+plot(rasterTyH,main="Typic Haplocambids")
+plot(rasterTyT,main="Typic Torriorthents")
+
+
+
 #Importancia de la variable
 plot(varImp(model))
 
