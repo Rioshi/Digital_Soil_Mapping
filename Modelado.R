@@ -96,9 +96,7 @@ relieve2 <- resample(relieve,organismos$ndvi, method="bilinear")
 clima2 <- resample(clima,organismos$ndvi, method="bilinear")
 lito2 <- resample(lito,organismos$ndvi, method="bilinear")
 covariables <- stack(organismos,relieve2,clima2,lito2)
-nam <- c("ndvi","ci","Asp","Cvi","Csc","Lc","LS","ele","Rsp","Sp","Twi",
-         "Vd","ET","Pt","Tm","Wi","Hd","Rd","Qr","Ca","Ma")
-names(covariables) <- nam
+
 
 
 
@@ -274,7 +272,7 @@ setControl <- trainControl(
 #Naive Bayes Parameters
 grid <- data.frame(fL=1000, usekernel=TRUE,adjust=1)
 #Naive Bayes Model
-model <- train(ST~.,data=cali[,4:22],'nb',
+model <- train(ST~.,data=cali[,4:25],'nb',
                metric=c("Accuracy","Kappa"),
                tuneGrid=grid,
                preProcess=c("center", "scale", "YeoJohnson"),
@@ -394,6 +392,50 @@ layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE),
 layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE), 
        widths=c(1,1), heights=c(1,1))
 
+################################################
+####Alternativo
+#set.seed(9560)
+#down_train <- downSample(x = cali[,5:25],
+#                         y = cali$ST)
+set.seed(9560)
+up_train <- upSample(x = cali[,5:25],
+                     y = cali$ST)
 
+#library(DMwR)
+#set.seed(111)
+#smote_train  <- SMOTE(ST~.,data=cali[,4:25])                         
+#table(smote_train$Class) 
 
+#library(ROSE)
+#set.seed(9560)
+#rose_train <- ROSE(ST~.,data=cali[,4:25])
 
+#Data splitting
+set.seed(3456)
+trainIndex <- createDataPartition(up_train$Class, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+Train <- up_train[ trainIndex,]
+Test  <- up_train[-trainIndex,]
+
+#Cross Validation
+
+set.seed(25)
+setControl <- trainControl(
+  method = "repeatedcv",
+  number = 5,
+  repeats = 100,
+  verboseIter = FALSE,
+  classProbs=TRUE
+)
+
+#Naive Bayes Parameters
+grid <- data.frame(fL=1000, usekernel=TRUE,adjust=1)
+#Naive Bayes Model
+model <- train(Class~.,data=up_train,'nb',
+               metric=c("Accuracy","Kappa"),
+               tuneGrid=grid,
+               preProcess=c("center", "scale", "YeoJohnson"),
+               trControl=setControl,
+               na.action = na.omit
+)
