@@ -1,4 +1,6 @@
+#####################
 ##Lectura de datos##
+#####################
 library(raster)
 library(caret)
 setwd("H:/TESIS/2018")
@@ -78,6 +80,12 @@ clima <- mask(clima,masc2)
 organismos <- mask(organismos,masc3)
 lito <- mask(lito,masc4)
 
+###Covariables remuestreo
+relieve2 <- resample(relieve,organismos$ndvi, method="bilinear")
+clima2 <- resample(clima,organismos$ndvi, method="bilinear")
+lito2 <- resample(lito,organismos$ndvi, method="bilinear")
+covariables <- stack(organismos,relieve2,clima2,lito2)
+
 #######################################################
 ## ANALISIS EXPLORATORIO DE DATOS
 ######################################################
@@ -91,18 +99,7 @@ lito.corr <- layerStats(lito,stat="pearson",na.rm = TRUE)
 #Prueba variables
 nearZeroVar(cali[,5:23],saveMetrics = TRUE)
 
-###Covariables remuestreo
-relieve2 <- resample(relieve,organismos$ndvi, method="bilinear")
-clima2 <- resample(clima,organismos$ndvi, method="bilinear")
-lito2 <- resample(lito,organismos$ndvi, method="bilinear")
-covariables <- stack(organismos,relieve2,clima2,lito2)
-
-
-
-
 #Estadisticas basicas
-
-
 media <- cellStats(x=covariables,stat='mean',na.rm=TRUE,asSample=FALSE)
 sd <- cellStats(x=covariables,stat='sd',na.rm=TRUE,asSample=FALSE)
 CV <- sd*100/abs(media)
@@ -141,8 +138,9 @@ corrplot(covar.corr$`pearson correlation coefficient`, method="color", col=col(1
 )
 
 
-
-
+#######################################################
+## DISTRIBUCION DE LOS DATOS
+######################################################
 
 #Kolgomorov-Smirnoff
 ks.test(x=scale(na.omit(relieve$MDE)),y=scale(cali$MDE))
@@ -249,6 +247,7 @@ lines(density(cali$ci,bw = "sj"),col="red",lwd = 3)
 
 ######################################
 #MODELADO#
+######################################
 library(caret)
 library("klaR")
 library(e1071)
@@ -256,32 +255,55 @@ library(e1071)
 
 levels(cali$ST) <- make.names(levels(factor(cali$ST)))
 
+#Balanceo de clases
+set.seed(9560)
+up_train <- upSample(x = cali[,5:25],
+                     y = cali$ST)
+#Data splitting
+set.seed(3456)
+trainIndex <- createDataPartition(up_train$Class, p = .7, 
+                                  list = FALSE, 
+                                  times = 1)
+Train <- up_train[ trainIndex,]
+Test  <- up_train[-trainIndex,]
 
-#Cross Validation
-
+#Validacion Cruzada
 set.seed(25)
 setControl <- trainControl(
   method = "repeatedcv",
   number = 5,
-  repeats = 1,
+  repeats = 100,
   verboseIter = FALSE,
-  classProbs=TRUE, 
-  sampling = "up"
+  classProbs=TRUE # ,
+# sampling = "up" 
 )
 
 #Naive Bayes Parameters
 grid <- data.frame(fL=1000, usekernel=TRUE,adjust=1)
+set.seed(11)
 #Naive Bayes Model
-model <- train(ST~.,data=cali[,4:25],'nb',
+model <- train(Class~.,data=Train,'nb',
                metric=c("Accuracy","Kappa"),
                tuneGrid=grid,
                preProcess=c("center", "scale", "YeoJohnson"),
                trControl=setControl,
                na.action = na.omit
-               )
+)
+
+cm1 <- confusionMatrix(data=predict(model,Train),reference=Train$Class)
+
+#Matriz de confusion
+pred.test <- predict(model,Test)
+confusionMatrix(data=pred.test,reference=Test$Class)
 
 #Importancia de la variable
-plot(varImp(model))
+vi <- varImp(model)
+colnames(vi$importance) <- c("Aridic Haplustolls", "Fluventic Haplocambids", "Pachic Haplustolls","Sodic Haplocambids",
+                             "Torriorthentic Haplustolls", "Typic Haplocambids", "Typic Torriorthents")
+rownames(vi$importance) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
+                             "CPP","CPL","LS","MDE","RSP","PD","TWI","VD")
+plot(vi)
+ggplot(vi)
 
 
 #Prediction of classes
@@ -393,7 +415,8 @@ layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE),
        widths=c(1,1), heights=c(1,1))
 
 ################################################
-####Alternativo
+
+####Balanceo alternativo
 #set.seed(9560)
 #down_train <- downSample(x = cali[,5:25],
 #                         y = cali$ST)
@@ -410,32 +433,6 @@ up_train <- upSample(x = cali[,5:25],
 #set.seed(9560)
 #rose_train <- ROSE(ST~.,data=cali[,4:25])
 
-#Data splitting
-set.seed(3456)
-trainIndex <- createDataPartition(up_train$Class, p = .8, 
-                                  list = FALSE, 
-                                  times = 1)
-Train <- up_train[ trainIndex,]
-Test  <- up_train[-trainIndex,]
 
-#Cross Validation
 
-set.seed(25)
-setControl <- trainControl(
-  method = "repeatedcv",
-  number = 5,
-  repeats = 100,
-  verboseIter = FALSE,
-  classProbs=TRUE
-)
 
-#Naive Bayes Parameters
-grid <- data.frame(fL=1000, usekernel=TRUE,adjust=1)
-#Naive Bayes Model
-model <- train(Class~.,data=up_train,'nb',
-               metric=c("Accuracy","Kappa"),
-               tuneGrid=grid,
-               preProcess=c("center", "scale", "YeoJohnson"),
-               trControl=setControl,
-               na.action = na.omit
-)
