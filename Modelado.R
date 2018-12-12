@@ -3,7 +3,7 @@
 #####################
 library(raster)
 library(caret)
-setwd("H:/TESIS/2018")
+setwd("D:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -108,7 +108,8 @@ ske <- skew(as.data.frame(covariables),na.rm=TRUE) #asimetria
 sts <- cbind(media,sd,CV,ske)
 write.csv(x=sts,file="estadisticas_basicas.csv")
 
-
+names(covariables) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
+                        "CPP","CPL","LS","MDE","RSP","PD","TWI","VD")
 #Correlacion entre covariables
 options("scipen"=100, "digits"=5)
 covar.corr <- layerStats(covariables,stat="pearson",na.rm = TRUE,asSample = FALSE)
@@ -296,15 +297,41 @@ cm1 <- confusionMatrix(data=predict(model,Train),reference=Train$Class)
 pred.test <- predict(model,Test)
 confusionMatrix(data=pred.test,reference=Test$Class)
 
+###############################
 #Importancia de la variable
+##############################
 vi <- varImp(model)
 colnames(vi$importance) <- c("Aridic Haplustolls", "Fluventic Haplocambids", "Pachic Haplustolls","Sodic Haplocambids",
                              "Torriorthentic Haplustolls", "Typic Haplocambids", "Typic Torriorthents")
 rownames(vi$importance) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
                              "CPP","CPL","LS","MDE","RSP","PD","TWI","VD")
 plot(vi)
-ggplot(vi)
+ggplot(vi) + xlab("Covariables - Factores de formación de suelos") +
+  ylab("Importancia relativa (%)")
 
+write.csv(vi$importance,file="importancivariable.csv")
+
+#boxplot variables comunes a los7 taxones
+p1 <- ggplot(cali, aes(x=ST,y=Topographic_Wetness_Index))+
+  geom_boxplot(fill="gray") + coord_flip() + scale_fill_grey()  +
+  theme(axis.text.y=element_text(face="bold"))+
+  xlab("") + ylab("Índice Topográfico de Humedad")
+
+p2 <- ggplot(cali, aes(x=ST,y=LS_Factor))+
+  geom_boxplot(fill="gray") + coord_flip() + scale_fill_grey()  +
+  theme(axis.text.y = element_blank())+
+  xlab("") + ylab("Factor LS")
+
+p3 <- ggplot(cali, aes(x=ST,y=mafic))+
+  geom_boxplot(fill="gray") + coord_flip() + scale_fill_grey()  + 
+  theme(axis.text.y = element_blank())+
+  xlab("") + ylab("Índice Máfico")
+
+library("gridExtra")
+grid.arrange(p1,p2,p3,ncol=3)
+grid.arrange(p1,                             # First row with one plot spaning over 2 columns
+             arrangeGrob(p2, p3, ncol = 2), # Second row with 2 plots in 2 different columns
+             nrow = 2)                       # Number of rows
 
 #Prediction of classes
 mm <- predict(object=covariables, model=model, fun=predict, type="raw") #type raw = probability, prob = class
@@ -321,8 +348,8 @@ mm2["ID"] <- rnam
 covariables.DF["ID"] <- rnam2
 
 ST <- merge(covariables.DF,mm2,by="ID")
-save(ST, file = "E:/TESIS/2018/ST.RData")
-load("E:/TESIS/2018/ST.RData")
+save(ST, file = "D:/TESIS/2018/ST.RData")
+load("D:/TESIS/2018/ST.RData")
 
 AH <- ST[,c(2,3,25)]
 coordinates(AH) <- ~ x + y
