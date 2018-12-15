@@ -109,12 +109,14 @@ library(psych)
 ske <- skew(as.data.frame(covariables),na.rm=TRUE) #asimetria
 sts <- cbind(media,max,min,sd,CV,ske)
 write.csv(x=sts,file="estadisticas_basicas.csv")
+as.data.frame()
+names(covariables) <- c("NDVI","CB","OR","ICO","CPP","CPL","LS","MDE","RSP","PD","TWI","VD","ET",
+                        "PPT","TM","WS","WVP","RS","QI","CI","MI")
 
-names(covariables) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
-                        "CPP","CPL","LS","MDE","RSP","PD","TWI","VD")
 #Correlacion entre covariables
 options("scipen"=100, "digits"=5)
 covar.corr <- layerStats(covariables,stat="pearson",na.rm = TRUE,asSample = FALSE)
+write.csv(covar.corr$`pearson correlation coefficient`,file="cormatrix.csv")
 
 library(corrplot)
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
@@ -133,13 +135,26 @@ col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA")
 #correl.matrix <- correlation(covar.matrix)
 
 #Guardarlo en 1500 width ,,, heght 1300 
-corrplot(covar.corr$`pearson correlation coefficient`, method="color", col=col(10),  
-         type="lower", order="original", number.digits = 2, number.cex = 1.2, tl.cex = 1.5,cl.cex=1.5,
-         addCoef.col = "black",
+corrplot(covar.corr$`pearson correlation coefficient`, method="pie", col=col(10),  
+         type="lower", order="original", number.digits = 2, number.cex = 1.2, tl.cex = 1.2,cl.cex=1.5,
+#         addCoef.col = "black",
          tl.col="black", tl.srt=45,
-         diag=FALSE 
+         diag=TRUE 
 )
 
+r1 <- plot(covariables$QI, xlim=c(324705,340000),ylim=c(8682745,8695000))
+r2 <- plot(covariables$CI)
+r3 <- plot(covariables$MI)
+
+library(rasterVis) #magmaTheme RdBuTheme viridisTheme
+#indices litologicos
+rasterVis::levelplot(covariables, layers = c(19:21), contour=FALSE,
+          par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
+#indices de relieve
+rasterVis::levelplot(covariables, layers = c(5,6), contour=FALSE,
+                     par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
+rasterVis::levelplot(covariables, layers = 4, contour=FALSE,margin=FALSE,
+                     par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
 
 #######################################################
 ## DISTRIBUCION DE LOS DATOS
@@ -160,6 +175,9 @@ ks.test(x=scale(na.omit(relieve$Valley_Depth)),y=scale(cali$Valley_Depth))
 ks.test(x=scale(na.omit(clima$HS_acu)),y=scale(cali$HS_acu))
 ks.test(x=scale(na.omit(clima$ppt_acu)),y=scale(cali$ppt_acu))
 ks.test(x=scale(na.omit(clima$tmean)),y=scale(cali$tmean))
+ks.test(x=scale(na.omit(clima$wind)),y=scale(cali$wind))
+ks.test(x=scale(na.omit(clima$Hd)),y=scale(cali$Hd))
+ks.test(x=scale(na.omit(clima$Rd)),y=scale(cali$Rd))
 
 ks.test(x=scale(na.omit(lito$qri)),y=scale(cali$qri))
 ks.test(x=scale(na.omit(lito$carb)),y=scale(cali$carb))
@@ -224,6 +242,19 @@ lines(density(cali$ppt_acu,bw = "sj"),col="red",lwd = 3)
 hist(na.omit(clima$HS_acu),maxpixels=1500000,xlim=c(1050,1500),main="Evapotranspiración anual acumulada",col="gray",
      prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.213   p-valor = 0.067",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
 lines(density(cali$HS_acu,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(clima$wind),maxpixels=1500000,xlim=c(2.2,3.6),main="Velocidad del viento",col="gray",
+     prob=TRUE,ylim=c(0,4),xlab="ks:  D = 0.114   p-valor = 0.720",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+lines(density(cali$wind,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(clima$Hd),maxpixels=1500000,xlim=c(0.5,1.6),main="Presión devapor de agua",col="gray",
+     prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.103   p-valor = 0.820",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+lines(density(cali$Hd,bw = "sj"),col="red",lwd = 3)
+
+hist(na.omit(clima$Rd),maxpixels=1500000,xlim=c(16200,18500),main="Radiación solar total anual",col="gray",
+     prob=TRUE,ylim=c(0,0.003),xlab="ks:  D = 0.243   p-valor = 0.023",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+lines(density(cali$Rd,bw = "sj"),col="red",lwd = 3)
+
 ##########
 
 hist(na.omit(lito$qri),maxpixels=1500000,xlim=c(0.995,1.010),main="Índice de Cuarzo",col="gray",
