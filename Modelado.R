@@ -103,9 +103,11 @@ nearZeroVar(cali[,5:23],saveMetrics = TRUE)
 media <- cellStats(x=covariables,stat='mean',na.rm=TRUE,asSample=FALSE)
 sd <- cellStats(x=covariables,stat='sd',na.rm=TRUE,asSample=FALSE)
 CV <- sd*100/abs(media)
+max <- cellStats(x=covariables,stat='max',na.rm=TRUE,asSample=FALSE)
+min <- cellStats(x=covariables,stat='min',na.rm=TRUE,asSample=FALSE)
 library(psych)
 ske <- skew(as.data.frame(covariables),na.rm=TRUE) #asimetria
-sts <- cbind(media,sd,CV,ske)
+sts <- cbind(media,max,min,sd,CV,ske)
 write.csv(x=sts,file="estadisticas_basicas.csv")
 
 names(covariables) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
@@ -300,7 +302,7 @@ confusionMatrix(data=pred.test,reference=Test$Class)
 ###############################
 #Importancia de la variable
 ##############################
-vi <- varImp(model)
+vi <- varImp(model,scale=FALSE,sort=TRUE)
 colnames(vi$importance) <- c("Aridic Haplustolls", "Fluventic Haplocambids", "Pachic Haplustolls","Sodic Haplocambids",
                              "Torriorthentic Haplustolls", "Typic Haplocambids", "Typic Torriorthents")
 rownames(vi$importance) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
@@ -313,7 +315,7 @@ write.csv(vi$importance,file="importancivariable.csv")
 
 #boxplot variables comunes a los7 taxones
 p1 <- ggplot(cali, aes(x=ST,y=Topographic_Wetness_Index))+
-  geom_boxplot(fill="gray") + coord_flip() + scale_fill_grey()  +
+  geom_boxplot(fill="gray")  + scale_fill_grey()  +
   theme(axis.text.y=element_text(face="bold"))+
   xlab("") + ylab("Índice Topográfico de Humedad")
 
