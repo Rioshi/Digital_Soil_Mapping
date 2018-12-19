@@ -142,6 +142,7 @@ corrplot(covar.corr$`pearson correlation coefficient`, method="pie", col=col(10)
          diag=TRUE 
 )
 
+#Ploteado de covariables
 r1 <- plot(covariables$QI, xlim=c(324705,340000),ylim=c(8682745,8695000))
 r2 <- plot(covariables$CI)
 r3 <- plot(covariables$MI)
