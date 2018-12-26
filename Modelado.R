@@ -3,7 +3,7 @@
 #####################
 library(raster)
 library(caret)
-setwd("D:/TESIS/2018")
+setwd("H:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -382,8 +382,8 @@ mm2["ID"] <- rnam
 covariables.DF["ID"] <- rnam2
 
 ST <- merge(covariables.DF,mm2,by="ID")
-save(ST, file = "D:/TESIS/2018/ST.RData")
-load("D:/TESIS/2018/ST.RData")
+save(ST, file = "H:/TESIS/2018/ST.RData")
+load("H:/TESIS/2018/ST.RData")
 
 AH <- ST[,c(2,3,25)]
 coordinates(AH) <- ~ x + y
