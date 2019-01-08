@@ -334,14 +334,22 @@ confusionMatrix(data=pred.test,reference=Test$Class)
 ###############################
 #Importancia de la variable
 ##############################
-vi <- varImp(model,scale=FALSE,sort=TRUE)
-colnames(vi$importance) <- c("Aridic Haplustolls", "Fluventic Haplocambids", "Pachic Haplustolls","Sodic Haplocambids",
+vi <- varImp(model,scale=TRUE,sort=TRUE)
+colnames(vi$importance) <- c("Aridic Haplustolls", "Pachic Haplustolls","Sodic Haplocambids",
                              "Torriorthentic Haplustolls", "Typic Haplocambids", "Typic Torriorthents")
 rownames(vi$importance) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
                              "CPP","CPL","LS","MDE","RSP","PD","TWI","VD")
 plot(vi)
 ggplot(vi) + xlab("Covariables - Factores de formación de suelos") +
-  ylab("Importancia relativa (%)")
+  ylab("Importancia de la Variable") +
+  theme(axis.text = element_text(size=11.5),
+        strip.text = element_text(size = 12, face="bold"), 
+        axis.title.x = element_text(size=12, face="bold"),
+        axis.title.y = element_text(size=12, face="bold"))
+
+#para mas info https://github.com/topepo/caret/blob/master/pkg/caret/R/plot.varImp.train.R
+plotObj <- sortImp(vi, dim(vi$importance)[1])
+
 
 write.csv(vi$importance,file="importancivariable.csv")
 
@@ -390,66 +398,192 @@ coordinates(AH) <- ~ x + y
 gridded(AH) <- TRUE
 rasterAH <- raster(AH)
 
-FH <- ST[,c(2,3,26)]
-coordinates(FH) <- ~ x + y
-gridded(FH) <- TRUE
-rasterFH <- raster(FH)
 
-
-PH <- ST[,c(2,3,27)]
+PH <- ST[,c(2,3,26)]
 coordinates(PH) <- ~ x + y
 gridded(PH) <- TRUE
 rasterPH <- raster(PH)
 
 
-SH <- ST[,c(2,3,28)]
+SH <- ST[,c(2,3,27)]
 coordinates(SH) <- ~ x + y
 gridded(SH) <- TRUE
 rasterSH <- raster(SH)
 
 
-ToH <- ST[,c(2,3,29)]
+ToH <- ST[,c(2,3,28)]
 coordinates(ToH) <- ~ x + y
 gridded(ToH) <- TRUE
 rasterToH <- raster(ToH)
 
 
-TyH <- ST[,c(2,3,30)]
+TyH <- ST[,c(2,3,29)]
 coordinates(TyH) <- ~ x + y
 gridded(TyH) <- TRUE
 rasterTyH <- raster(TyH)
 
 
-TyT <- ST[,c(2,3,31)]
+TyT <- ST[,c(2,3,30)]
 coordinates(TyT) <- ~ x + y
 gridded(TyT) <- TRUE
 rasterTyT <- raster(TyT)
 
-rm("TyT","TyH","ToH","SH","PH","FH","SH","AH")
+rm("TyT","TyH","ToH","SH","PH","SH","AH")
 
 
 plot(rasterAH,main="Aridic Haplustolls")
-plot(rasterFH,main="Fluventic Haplocambids")
 plot(rasterPH,main="Pachic Haplustolls")
 plot(rasterSH,main="Sodic Haplocambids")
 plot(rasterToH,main="Torriorthentic Haplustolls")
 plot(rasterTyH,main="Typic Haplocambids")
 plot(rasterTyT,main="Typic Torriorthents")
 
-Probs <- stack(rasterAH,rasterFH,rasterPH,rasterSH,rasterToH,rasterTyH,rasterTyT)
+Probs <- stack(rasterAH,rasterPH,rasterSH,rasterToH,rasterTyH,rasterTyT)
 
-mm3 <- predict(object = model,newdata=covariables.DF,type = "raw",threshold = 0.01)
+mm3 <- predict(object = model,newdata=covariables.DF,type = "raw",threshold = 0.5)
 covariables.DF["ST"] <- as.numeric(mm3)
-class.ST <- covariables.DF[,c(1,2,24)]
+class.ST <- covariables.DF[,c(1,2,25)]
 coordinates(class.ST) <- ~ x + y
 gridded(class.ST) <- TRUE
 rasterclass.ST <- raster(class.ST)
 plot(rasterclass.ST)
+levels(mm3)
+head(mm3,71)
+as.numeric(mm3)
+
+writeRaster(x = rasterclass.ST,filename = "RASTER/classrast.tif",overwrite=TRUE)
+rasterclass.ST <- raster("RASTER/classrast.tif")
+
+################################################################
+#Graficar cada taxon de suelo con su importancia de la variable
+#################################################################
+#Aridic Haplustolls
+p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Aridic Haplustolls`),y=plotObj$`Aridic Haplustolls`)) +
+  geom_bar(stat="identity") + xlab("") +
+  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
+                                             axis.title.y=element_text(face="bold",size=12))
+
+
+
+
+p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=1,
+          xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
+          margin=FALSE, maxplixels =1e40, main = "Aridic Haplustolls"
+)
+grid.arrange(p2,p1,nrow=2)
+#Sodic Haplocambids
+p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Sodic Haplocambids`),y=plotObj$`Sodic Haplocambids`)) +
+  geom_bar(stat="identity") + xlab("") +
+  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
+                                             axis.title.y=element_text(face="bold",size=12))
+p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=3,
+               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
+               margin=FALSE, maxplixels =1e40, main = "Sodic Haplocambids"
+)
+grid.arrange(p2,p1,nrow=2)
+#Pachic Haplustolls
+p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Pachic Haplustolls`),y=plotObj$`Pachic Haplustolls`)) +
+  geom_bar(stat="identity") + xlab("") +
+  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
+                                             axis.title.y=element_text(face="bold",size=12))
+p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=2,
+               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
+               margin=FALSE, maxplixels =1e40, main = "Pachic Haplustolls"
+)
+grid.arrange(p2,p1,nrow=2)
+#Torriorthentic Haplustolls
+p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Torriorthentic Haplustolls`),y=plotObj$`Torriorthentic Haplustolls`)) +
+  geom_bar(stat="identity") + xlab("") +
+  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
+                                             axis.title.y=element_text(face="bold",size=12))
+p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=4,
+               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
+               margin=FALSE, maxplixels =1e40, main = "Torriorthentic Haplustolls"
+)
+grid.arrange(p2,p1,nrow=2)
+#Typic Haplocambids
+p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Typic Haplocambids`),y=plotObj$`Typic Haplocambids`)) +
+  geom_bar(stat="identity") + xlab("") +
+  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
+                                             axis.title.y=element_text(face="bold",size=12))
+p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=5,
+               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
+               margin=FALSE, maxplixels =1e40, main = "Typic Haplocambids"
+)
+grid.arrange(p2,p1,nrow=2)
+#Typic Torriorthents
+p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Typic Torriorthents`),y=plotObj$`Typic Torriorthents`)) +
+  geom_bar(stat="identity") + xlab("") +
+  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
+                                             axis.title.y=element_text(face="bold",size=12))
+p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=6,
+               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
+               margin=FALSE, maxplixels =1e40, main = "Typic Torriorthents"
+)
+grid.arrange(p2,p1,nrow=2)
+
+
+
+#################################################################
+#Extraer datos de unidades homogeneas
+uhomo2 <- raster(as.numeric(uhomo$))
+
+datos <- cbind(datos, extract(covariables, datos.sp))
 
 
 ##PLOT rasters
 library(rasterVis)
-levelplot(Probs)
+library(RColorBrewer)
+colr <- colorRampPalette(brewer.pal(11, 'RdYlBu'))
+nam <- c("Aridic Haplustolls","Pachic Haplustolls","Sodic Haplocambids","Torriorthentic Haplustolls",
+         "Typic Haplocambids","Typic Torriorthents")
+
+
+levelplot(Probs, 
+          margin=TRUE,   
+          layers=c(1,3,4,5),
+          colorkey=list(
+            space='right',                   
+            labels=list(at=seq(0,1,by=0.2), font=4),
+            axis.line=list(col='black'),
+            width=1
+          ),  
+          par.settings=list(
+            strip.border=list(col='black'),
+            strip.background=list(col='transparent'),
+            axis.line=list(col='transparent')
+          ),
+          scales=list(draw=FALSE),  
+          par.strip.text=list(
+            cex=1.5
+          ),
+          col.regions=colr,                   
+          at=seq(0,1, len=101),
+          names.attr=nam[c(1,3,4,5)]) #+           
+  layer(sp.polygons(uhomo, lwd=0.5))
+
+#Plot categorical data in levelplot#
+r <- ratify(rasterclass.ST)
+rat <- levels(r)[[1]]
+rat$Soil <- c('Aridic Haplustolls','Pachic Haplustolls','Sodic Haplocambids',
+         'Torriorthentic Haplustolls','Typic Haplocambids','Typic Torriorthents')
+levels(r) <- rat
+levelplot(r, col.regions=c("#00b144", "#ffff00", "#86b1ec","#0000ff", "#D2691E", "#BB0000"),
+          colorkey=list(
+            space='right'
+          ))
+#
+
+
+
+levelplot(Probs,par.settings = RdBuTheme, layers=c(2,6),
+#          layout=c(3, 2),
+          xlab=NULL, ylab=NULL, scales=list(draw=FALSE)
+#          names.attr= nam
+          )
+
+
+levelplot(Probs, layers = 1,margin = list(FUN = 'mean'), contour=TRUE,par.settings = magmaTheme)
 
 levelplot(Probs, layers = 1, margin = list(FUN = 'mean'), contour=TRUE,par.settings = magmaTheme)
 
