@@ -154,8 +154,14 @@ rasterVis::levelplot(covariables, layers = c(19:21), contour=FALSE,
 #indices de relieve
 rasterVis::levelplot(covariables, layers = c(5,6), contour=FALSE,
                      par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
-rasterVis::levelplot(covariables, layers = 4, contour=FALSE,margin=FALSE,
-                     par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
+rasterVis::levelplot(covariables, layers = 10, contour=FALSE,margin=FALSE,
+                     par.settings = RdBuTheme, xlim=c(324705,340000),ylim=c(8682745,8695000),
+                     colorkey=list(
+                       space='bottom',                   
+                       labels=list(font=4,cex=1.5),
+                       axis.line=list(col='black'),
+                       width=1
+                     ))
 
 #######################################################
 ## DISTRIBUCION DE LOS DATOS
