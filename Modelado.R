@@ -154,14 +154,14 @@ rasterVis::levelplot(covariables, layers = c(19:21), contour=FALSE,
 #indices de relieve
 rasterVis::levelplot(covariables, layers = c(5,6), contour=FALSE,
                      par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
-r2<-rasterVis::levelplot(covariables, layers = 12, contour=FALSE,margin=FALSE,main="Profundadad de los Valles",
+r2<-rasterVis::levelplot(covariables, layers = 21, contour=FALSE,margin=FALSE,main="Índice Máfico",
                      par.settings = RdBuTheme, xlim=c(324705,340000),ylim=c(8682745,8695000),
                      colorkey=list(
                        space='bottom',                   
-                       labels=list(font=4,cex=1.5),
+                       labels=list(font=4,cex=1),
                        axis.line=list(col='black'),
                        width=1
-                     ))
+                     )) 
 grid.arrange(r1,r2,ncol=2)
 #######################################################
 ## DISTRIBUCION DE LOS DATOS
