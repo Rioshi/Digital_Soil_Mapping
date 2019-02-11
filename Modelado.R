@@ -154,7 +154,7 @@ rasterVis::levelplot(covariables, layers = c(19:21), contour=FALSE,
 #indices de relieve
 rasterVis::levelplot(covariables, layers = c(5,6), contour=FALSE,
                      par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
-r2<-rasterVis::levelplot(covariables, layers = 21, contour=FALSE,margin=FALSE,main="Índice Máfico",
+r2<-rasterVis::levelplot(covariables, layers = c(13,14), contour=FALSE,margin=FALSE,main="Índice de Cuarzos",
                      par.settings = RdBuTheme, xlim=c(324705,340000),ylim=c(8682745,8695000),
                      colorkey=list(
                        space='bottom',                   
@@ -162,7 +162,7 @@ r2<-rasterVis::levelplot(covariables, layers = 21, contour=FALSE,margin=FALSE,ma
                        axis.line=list(col='black'),
                        width=1
                      )) 
-grid.arrange(r1,r2,ncol=2)
+gridExtra::grid.arrange(r1,r2,ncol=2)
 #######################################################
 ## DISTRIBUCION DE LOS DATOS
 ######################################################
