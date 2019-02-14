@@ -532,12 +532,25 @@ grid.arrange(p2,p1,nrow=2)
 
 #################################################################
 #Extraer datos de unidades homogeneas
-uhomo2 <- raster(as.numeric(uhomo$))
+stclass <- raster("H:/TESIS/2018/RASTER/classrast.tif")
+load("H:/TESIS/2018/ST.RData")
+#covariables.DF <- as.data.frame(covariables,xy=TRUE,na.rm=TRUE)
+ST.sp <- ST
+coordinates(ST.sp) <- ~x+y
+proj4string(ST.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+ST <- cbind(ST, extract(stclass, ST.sp))
 
-datos <- cbind(datos, extract(covariables, datos.sp))
+library(sf)
+out <- st_intersection(ST.sp, uhomo)
+st_is_valid(uhomo)
+head(over(ST.sp, uhomo))
 
+novo<-over(uhomo[,"uhomo"],ST.sp)
 
+maptools::spCbind(novo, uhomo)
+#################################################################
 ##PLOT rasters
+#################################################################
 library(rasterVis)
 library(RColorBrewer)
 colr <- colorRampPalette(brewer.pal(11, 'RdYlBu'))
