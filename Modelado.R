@@ -540,14 +540,17 @@ coordinates(ST.sp) <- ~x+y
 proj4string(ST.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 ST <- cbind(ST, extract(stclass, ST.sp))
 
-library(sf)
-out <- st_intersection(ST.sp, uhomo)
-st_is_valid(uhomo)
-head(over(ST.sp, uhomo))
+#intersectar puntos con los atributos de poligonos 
+ST.sp <- ST
+coordinates(ST.sp) <- ~x+y
+proj4string(ST.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+library(spatialEco)
+int <- point.in.poly(x=ST.sp,y=uhomo,sp=TRUE)
+int <- int@data
+int$extract.stclass..ST.sp. <- as.factor(int$extract.stclass..ST.sp.)
+int$Clave <- as.factor(int$Clave)
 
-novo<-over(uhomo[,"uhomo"],ST.sp)
-
-maptools::spCbind(novo, uhomo)
+table(int$uhomo,int$extract.stclass..ST.sp.)
 #################################################################
 ##PLOT rasters
 #################################################################
