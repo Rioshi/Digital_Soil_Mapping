@@ -532,6 +532,7 @@ grid.arrange(p2,p1,nrow=2)
 
 #################################################################
 #Extraer datos de unidades homogeneas
+#################################################################
 stclass <- raster("H:/TESIS/2018/RASTER/classrast.tif")
 load("H:/TESIS/2018/ST.RData")
 #covariables.DF <- as.data.frame(covariables,xy=TRUE,na.rm=TRUE)
@@ -550,7 +551,9 @@ int <- int@data
 int$extract.stclass..ST.sp. <- as.factor(int$extract.stclass..ST.sp.)
 int$Clave <- as.factor(int$Clave)
 
-table(int$uhomo,int$extract.stclass..ST.sp.)
+#Prueba de independencia
+tb1 <- table(int$uhomo,int$extract.stclass..ST.sp.)
+chisq.test(tb1)
 #################################################################
 ##PLOT rasters
 #################################################################
