@@ -535,6 +535,7 @@ grid.arrange(p2,p1,nrow=2)
 #################################################################
 stclass <- raster("H:/TESIS/2018/RASTER/classrast.tif")
 load("H:/TESIS/2018/ST.RData")
+uhomo <- shapefile("Unidades_homogeneas/uhomo.shp")
 #covariables.DF <- as.data.frame(covariables,xy=TRUE,na.rm=TRUE)
 ST.sp <- ST
 coordinates(ST.sp) <- ~x+y
@@ -552,8 +553,13 @@ int$extract.stclass..ST.sp. <- as.factor(int$extract.stclass..ST.sp.)
 int$Clave <- as.factor(int$Clave)
 
 #Prueba de independencia
-tb1 <- table(int$uhomo,int$extract.stclass..ST.sp.)
+tb1 <- table(int$utaxo,int$extract.stclass..ST.sp.)
+round(prop.table(tb1,1)*100,2)
 chisq.test(tb1)
+
+tb2 <- table(int$uhomo,int$extract.stclass..ST.sp.)
+round(prop.table(tb2,1)*100,2)
+chisq.test(tb2)
 #################################################################
 ##PLOT rasters
 #################################################################
