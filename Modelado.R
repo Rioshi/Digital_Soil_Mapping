@@ -560,6 +560,33 @@ chisq.test(tb1)
 tb2 <- table(int$uhomo,int$extract.stclass..ST.sp.)
 round(prop.table(tb2,1)*100,2)
 chisq.test(tb2)
+
+#Prueba de asociacion V de Cramer
+library(DescTools)
+ContCoef(tb1) #Contingencia de Pearson
+CramerV(tb1)
+
+#De Pawlik (Pearson corregido)
+paw <- function(x,y){
+  tabla <- table(x,y)
+  CP <-ContCoef(tabla)
+  q <- min(dim(tabla)[1],dim(tabla)[2])
+  Cmax <- sqrt((q-1)/q)
+  pawlik <- CP/Cmax
+  return(pawlik)
+}
+
+paw(int$utaxo,int$extract.stclass..ST.sp.)
+paw(int$uhomo,int$extract.stclass..ST.sp.)
+cmc <- function(x,y){
+  tabla <- table(x,y)
+  chi <- as.numeric(chisq.test(tabla)$sta)
+  n <- sum(tabla)
+  ccmc <- chi/n
+  return(ccmc)
+}
+cmc(int$utaxo,int$extract.stclass..ST.sp.)
+cmc(int$uhomo,int$extract.stclass..ST.sp.)
 #################################################################
 ##PLOT rasters
 #################################################################
