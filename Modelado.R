@@ -687,5 +687,31 @@ up_train <- upSample(x = cali[,5:25],
 #rose_train <- ROSE(ST~.,data=cali[,4:25])
 
 
+#################################################################
+# Actualizacion de unidades cartograficas
+#################################################################
+library(googlesheets)
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(ggpubr)
+gs_auth()
+my_sheets <- gs_ls()
+gap <- gs_title("Analisis")
+act <- gap %>%
+  gs_read(ws = "Actualiza")
+act <- as.data.frame(act)
+act$Subgrupo <- as.factor(act$Subgrupo)
 
-
+df <- subset(act,UC=="Va")
+p2 <-ggplot(data=df, aes(x=Subgrupo, y=Cobertura, fill=Tipo)) +
+  geom_bar(stat="identity", color="black", position=position_dodge())+
+  theme_minimal() + scale_fill_manual(values=c('#999999','#E69F00')) +
+  theme(axis.text=element_text(size=12),
+        axis.title.x = element_text(face="bold"),
+        axis.title.y = element_text(face="bold"))+
+  ylab("Área Cubierta (%)") + xlab("")+
+  guides(fill=guide_legend(title=NULL))
+jpeg("H:/TESIS/2018/Imagenes/actualiza.jpeg", width = 15, height = 20, units = 'cm', res = 300)
+ggarrange(p1,p2, ncol=1,nrow=2, common.legend = TRUE, legend="bottom")
+dev.off()
