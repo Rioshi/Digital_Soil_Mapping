@@ -3,7 +3,7 @@
 #####################
 library(raster)
 library(caret)
-setwd("H:/TESIS/2018")
+setwd("G:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -302,7 +302,7 @@ up_train <- upSample(x = cali[,5:25],
                      y = cali$ST)
 #Data splitting
 set.seed(3456)
-trainIndex <- createDataPartition(up_train$Class, p = .7, 
+trainIndex <- createDataPartition(up_train$Class, p = 1, #originalmente era 0.7
                                   list = FALSE, 
                                   times = 1)
 Train <- up_train[ trainIndex,]
@@ -312,8 +312,8 @@ Test  <- up_train[-trainIndex,]
 set.seed(25)
 setControl <- trainControl(
   method = "repeatedcv",
-  number = 5,
-  repeats = 100,
+  number = 6, #usar 64/n = numero de taxas
+  repeats=1000,
   verboseIter = FALSE,
   classProbs=TRUE # ,
 # sampling = "up" 
