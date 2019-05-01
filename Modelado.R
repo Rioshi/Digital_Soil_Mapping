@@ -58,6 +58,7 @@ uhomo <- shapefile("Unidades_homogeneas/uhomo.shp")
 
 #Lectura de calicatas
 cali <- read.csv("calic.csv",header = TRUE)
+cali <- cali[,1:4]
 cali.sp <- cali
 coordinates(cali.sp) = ~X+Y
 proj4string(cali.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
