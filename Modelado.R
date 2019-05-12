@@ -3,7 +3,7 @@
 #####################
 library(raster)
 library(caret)
-setwd("G:/TESIS/2018")
+setwd("H:/TESIS/2018")
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -321,7 +321,7 @@ setControl <- trainControl(
 )
 
 #Naive Bayes Parameters
-grid <- data.frame(fL=1000, usekernel=TRUE,adjust=1)
+grid <- data.frame(fL=100, usekernel=TRUE,adjust=1)
 set.seed(11)
 #Naive Bayes Model
 model <- train(Class~.,data=Train,'nb',
