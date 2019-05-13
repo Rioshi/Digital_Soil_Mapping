@@ -293,33 +293,50 @@ lines(density(cali$ci,bw = "sj"),col="red",lwd = 3)
 library(caret)
 library("klaR")
 library(e1071)
-
-
 levels(cali$ST) <- make.names(levels(factor(cali$ST)))
-
 #Balanceo de clases
 set.seed(9560)
 up_train <- upSample(x = cali[,5:25],
                      y = cali$ST)
-#Data splitting
+
+###Metodo con Validacion Cruzada
+set.seed(25)
+setControl <- trainControl(
+  method = "repeatedcv",
+  number = 10, #usar 64/n = numero de taxas
+  repeats=100,
+  verboseIter = FALSE,
+  classProbs=TRUE # ,
+  # sampling = "up" 
+)
+#Naive Bayes Parameters
+grid <- data.frame(fL=100, usekernel=TRUE,adjust=1)
+set.seed(11)
+#Naive Bayes Model
+modelcv <- train(Class~.,data=up_train,'nb',
+               metric=c("Accuracy","Kappa"),
+               tuneGrid=grid,
+               preProcess=c("center", "scale", "YeoJohnson"),
+               trControl=setControl,
+               na.action = na.omit
+)
+confusionMatrix(data=predict(modelcv,up_train),reference=up_train$Class)
+
+
+
+
+
+###Metodo con Data splitting
 set.seed(3456)
-trainIndex <- createDataPartition(up_train$Class, p = 1, #originalmente era 0.7
+trainIndex <- createDataPartition(up_train$Class, p = 0.7, 
                                   list = FALSE, 
                                   times = 1)
 Train <- up_train[ trainIndex,]
 Test  <- up_train[-trainIndex,]
-
 #Validacion Cruzada
 set.seed(25)
 setControl <- trainControl(
-  method = "repeatedcv",
-  number = 6, #usar 64/n = numero de taxas
-  repeats=1000,
-  verboseIter = FALSE,
-  classProbs=TRUE # ,
-# sampling = "up" 
-)
-
+  method = "none")
 #Naive Bayes Parameters
 grid <- data.frame(fL=100, usekernel=TRUE,adjust=1)
 set.seed(11)
@@ -331,19 +348,17 @@ model <- train(Class~.,data=Train,'nb',
                trControl=setControl,
                na.action = na.omit
 )
-
-cm1 <- confusionMatrix(data=predict(model,Train),reference=Train$Class)
-
 #Matriz de confusion
-pred.test <- predict(model,Test)
-confusionMatrix(data=pred.test,reference=Test$Class)
+confusionMatrix(data=predict(model,Test),reference=Test$Class)
+
+
 
 ###############################
 #Importancia de la variable
 ##############################
-vi <- varImp(model,scale=TRUE,sort=TRUE)
-colnames(vi$importance) <- c("Aridic Haplustolls", "Pachic Haplustolls","Sodic Haplocambids",
-                             "Torriorthentic Haplustolls", "Typic Haplocambids", "Typic Torriorthents")
+vi <- varImp(modelcv,scale=TRUE,sort=TRUE)
+colnames(vi$importance) <- c("Fluventic Haplocambids", "Lithic Haplocambids","Lithic Torriorthents",
+                             "Sodic Haplocambids", "Typic Haplocambids", "Typic Torriorthents")
 rownames(vi$importance) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
                              "CPP","CPL","LS","MDE","RSP","PD","TWI","VD")
 plot(vi)
@@ -383,7 +398,7 @@ grid.arrange(p1,                             # First row with one plot spaning o
              nrow = 2)                       # Number of rows
 
 #Prediction of classes
-mm <- predict(object=covariables, model=model, fun=predict, type="raw") #type raw = probability, prob = class
+mm <- predict(object=covariables, model=modelcv, fun=predict, type="raw") #type raw = probability, prob = class
 mm@data@attributes
 
 #Prediccion de clases como dataframe
