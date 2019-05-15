@@ -403,66 +403,59 @@ mm@data@attributes
 
 #Prediccion de clases como dataframe
 covariables.DF <- as.data.frame(covariables,xy=TRUE,na.rm=TRUE)
-mm2 <- predict(object=model,newdata=covariables.DF,type="prob")
+mm2 <- predict(object=modelcv,newdata=covariables.DF,type="prob")
 
-
+#
 rnam <- row.names(mm2)
 rnam2 <- row.names(covariables.DF)
 mm2["ID"] <- rnam
 covariables.DF["ID"] <- rnam2
-
 ST <- merge(covariables.DF,mm2,by="ID")
 save(ST, file = "H:/TESIS/2018/ST.RData")
 load("H:/TESIS/2018/ST.RData")
 
-AH <- ST[,c(2,3,25)]
-coordinates(AH) <- ~ x + y
-gridded(AH) <- TRUE
-rasterAH <- raster(AH)
+FH <- ST[,c(2,3,25)] #fluventic Haplocambids
+coordinates(FH) <- ~ x + y
+gridded(FH) <- TRUE
+rasterFH <- raster(FH)
+rm(FH)
 
+LH <- ST[,c(2,3,26)] #Lithic Haplocambids
+coordinates(LH) <- ~ x + y
+gridded(LH) <- TRUE
+rasterLH <- raster(LH)
+rm(LH)
 
-PH <- ST[,c(2,3,26)]
-coordinates(PH) <- ~ x + y
-gridded(PH) <- TRUE
-rasterPH <- raster(PH)
+LT <- ST[,c(2,3,27)] #Lithic Torriorthents
+coordinates(LT) <- ~ x + y
+gridded(LT) <- TRUE
+rasterLT <- raster(LT)
+rm(LT)
 
-
-SH <- ST[,c(2,3,27)]
+SH <- ST[,c(2,3,28)] #Sodic Haplocambids
 coordinates(SH) <- ~ x + y
 gridded(SH) <- TRUE
 rasterSH <- raster(SH)
+rm(SH)
+
+TH <- ST[,c(2,3,29)] #Typic Haplocambids
+coordinates(TH) <- ~ x + y
+gridded(TH) <- TRUE
+rasterTH <- raster(TH)
+rm(TH)
+
+TT <- ST[,c(2,3,30)] #Typic Torriorthents
+coordinates(TT) <- ~ x + y
+gridded(TT) <- TRUE
+rasterTT <- raster(TT)
+rm(TT)
+
+Probs <- stack(rasterFH,rasterLH,rasterLT,rasterSH,rasterTH,rasterTT)
+rm(rasterFH,rasterLH,rasterLT,rasterSH,rasterTH,rasterTT)
+#
 
 
-ToH <- ST[,c(2,3,28)]
-coordinates(ToH) <- ~ x + y
-gridded(ToH) <- TRUE
-rasterToH <- raster(ToH)
-
-
-TyH <- ST[,c(2,3,29)]
-coordinates(TyH) <- ~ x + y
-gridded(TyH) <- TRUE
-rasterTyH <- raster(TyH)
-
-
-TyT <- ST[,c(2,3,30)]
-coordinates(TyT) <- ~ x + y
-gridded(TyT) <- TRUE
-rasterTyT <- raster(TyT)
-
-rm("TyT","TyH","ToH","SH","PH","SH","AH")
-
-
-plot(rasterAH,main="Aridic Haplustolls")
-plot(rasterPH,main="Pachic Haplustolls")
-plot(rasterSH,main="Sodic Haplocambids")
-plot(rasterToH,main="Torriorthentic Haplustolls")
-plot(rasterTyH,main="Typic Haplocambids")
-plot(rasterTyT,main="Typic Torriorthents")
-
-Probs <- stack(rasterAH,rasterPH,rasterSH,rasterToH,rasterTyH,rasterTyT)
-
-mm3 <- predict(object = model,newdata=covariables.DF,type = "raw",threshold = 0.5)
+mm3 <- predict(object = modelcv,newdata=covariables.DF,type = "raw",threshold = 0.5)
 covariables.DF["ST"] <- as.numeric(mm3)
 class.ST <- covariables.DF[,c(1,2,25)]
 coordinates(class.ST) <- ~ x + y
@@ -479,72 +472,36 @@ rasterclass.ST <- raster("RASTER/classrast.tif")
 ################################################################
 #Graficar cada taxon de suelo con su importancia de la variable
 #################################################################
-#Aridic Haplustolls
-p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Aridic Haplustolls`),y=plotObj$`Aridic Haplustolls`)) +
-  geom_bar(stat="identity") + xlab("") +
-  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
-                                             axis.title.y=element_text(face="bold",size=12))
-
-
-
-
-p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=1,
-          xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
-          margin=FALSE, maxplixels =1e40, main = "Aridic Haplustolls"
-)
-grid.arrange(p2,p1,nrow=2)
-#Sodic Haplocambids
-p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Sodic Haplocambids`),y=plotObj$`Sodic Haplocambids`)) +
-  geom_bar(stat="identity") + xlab("") +
-  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
-                                             axis.title.y=element_text(face="bold",size=12))
-p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=3,
-               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
-               margin=FALSE, maxplixels =1e40, main = "Sodic Haplocambids"
-)
-grid.arrange(p2,p1,nrow=2)
-#Pachic Haplustolls
-p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Pachic Haplustolls`),y=plotObj$`Pachic Haplustolls`)) +
-  geom_bar(stat="identity") + xlab("") +
-  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
-                                             axis.title.y=element_text(face="bold",size=12))
-p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=2,
-               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
-               margin=FALSE, maxplixels =1e40, main = "Pachic Haplustolls"
-)
-grid.arrange(p2,p1,nrow=2)
-#Torriorthentic Haplustolls
-p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Torriorthentic Haplustolls`),y=plotObj$`Torriorthentic Haplustolls`)) +
-  geom_bar(stat="identity") + xlab("") +
-  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
-                                             axis.title.y=element_text(face="bold",size=12))
-p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=4,
-               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
-               margin=FALSE, maxplixels =1e40, main = "Torriorthentic Haplustolls"
-)
-grid.arrange(p2,p1,nrow=2)
-#Typic Haplocambids
-p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Typic Haplocambids`),y=plotObj$`Typic Haplocambids`)) +
-  geom_bar(stat="identity") + xlab("") +
-  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
-                                             axis.title.y=element_text(face="bold",size=12))
-p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=5,
-               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
-               margin=FALSE, maxplixels =1e40, main = "Typic Haplocambids"
-)
-grid.arrange(p2,p1,nrow=2)
-#Typic Torriorthents
+#Cambiar taxon por taxon
 p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Typic Torriorthents`),y=plotObj$`Typic Torriorthents`)) +
   geom_bar(stat="identity") + xlab("") +
-  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12),
+  ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12,angle = 90),
                                              axis.title.y=element_text(face="bold",size=12))
-p2 <-levelplot(Probs,par.settings = RdBuTheme, layers=6,
-               xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
-               margin=FALSE, maxplixels =1e40, main = "Typic Torriorthents"
+p2 <-rasterVis::levelplot(Probs,par.settings = RdBuTheme, layers=6,
+          xlab=NULL, ylab=NULL, scales=list(draw=FALSE),
+          margin=FALSE, maxplixels =1e40, main = "Typic Torriorthents"
 )
+jpeg("Imagenes/TT.jpeg", width = 25, height = 30, units = 'cm', res = 400)
 grid.arrange(p2,p1,nrow=2)
+dev.off()
 
+################################################################
+#Comparacion TAXA vs UHOMO y UCARTO
+#################################################################
+comp <- read.table("Unidades_homogeneas/INTERSEC_TAXA_UHOMO.txt",header = TRUE,sep=";")
+str(comp)
+comp$classrast <- as.factor(comp$classrast)
+comp$Clave <- as.factor(comp$Clave)
 
+#Datos frecuenciales con zonas de vida
+table1 <- table(comp$classrast,comp$Abrev_)
+prop.table(table1,margin=2)*100
+#Datos frecuenciales con geologia
+table2 <- table(comp$classrast,comp$NAME)
+prop.table(table2,margin=1)*100
+#Datos frecuenciales con uhomo
+table3 <- table(comp$classrast,comp$uhomo)
+prop.table(table3,margin=1)*100
 
 #################################################################
 #Extraer datos de unidades homogeneas
