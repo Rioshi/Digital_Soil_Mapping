@@ -470,6 +470,23 @@ writeRaster(x = rasterclass.ST,filename = "RASTER/classrast.tif",overwrite=TRUE)
 rasterclass.ST <- raster("RASTER/classrast.tif")
 
 ################################################################
+#Graficar el mapa conjunto de taxones de suelo
+#################################################################
+r <- ratify(rasterclass.ST)
+rat <- levels(r)[[1]]
+#rat$Soil <- c('Fluventic Haplocambids','Lithic Haplocambids','Lithic Torriorthents',
+#               'Sodic Haplocambids','Typic Haplocambids','Typic Torriorthents')
+rat$Soil <- c('FH','LH','LT',
+               'SH','TH','TT')
+levels(r) <- rat
+jpeg("Imagenes/taxaplot.jpeg", width = 30, height = 25, units = 'cm', res = 400)
+rasterVis::levelplot(r, col.regions=c("#00b144", "#ffff00", "#86b1ec","#0000ff", "#D2691E", "#BB0000"),
+                     colorkey=list(
+                       space='bottom'
+                     ))
+dev.off()
+
+################################################################
 #Graficar cada taxon de suelo con su importancia de la variable
 #################################################################
 #Cambiar taxon por taxon
@@ -489,57 +506,28 @@ dev.off()
 #Comparacion TAXA vs UHOMO y UCARTO
 #################################################################
 comp <- read.table("Unidades_homogeneas/INTERSEC_TAXA_UHOMO.txt",header = TRUE,sep=";")
-str(comp)
-comp$classrast <- as.factor(comp$classrast)
-comp$Clave <- as.factor(comp$Clave)
+str(comp); comp$classrast <- as.factor(comp$classrast) ; comp$Clave <- as.factor(comp$Clave)
+comp1 <- read.table("Unidades_homogeneas/INTERSEC_TAXA_UCARTO.txt",header = TRUE,sep=";")
+str(comp1); comp1$classrast <- as.factor(comp1$classrast) ; comp1$Clave <- as.factor(comp1$Clave)
+levels(comp1$UCarto)[levels(comp1$UCarto)=="Asociacion Cumb-Chacalla"] <- "Asociacion Salpin-Chacalla"
+levels(comp1$SimbUcar)[levels(comp1$SimbUcar)=="Cu-Ch"] <- "Sa-Ch"
+
 
 #Datos frecuenciales con zonas de vida
 table1 <- table(comp$classrast,comp$Abrev_)
-prop.table(table1,margin=2)*100
+prop.table(table1,margin=1)*100
 #Datos frecuenciales con geologia
 table2 <- table(comp$classrast,comp$NAME)
 prop.table(table2,margin=1)*100
 #Datos frecuenciales con uhomo
 table3 <- table(comp$classrast,comp$uhomo)
 prop.table(table3,margin=1)*100
+#Datos frecuenciales con Unidades Cartograficas
+table4 <- table(comp1$UCarto,comp1$classrast)
+prop.table(table4,margin=1)*100
 
-#################################################################
-#Extraer datos de unidades homogeneas
-#################################################################
-stclass <- raster("H:/TESIS/2018/RASTER/classrast.tif")
-load("H:/TESIS/2018/ST.RData")
-uhomo <- shapefile("Unidades_homogeneas/uhomo.shp")
-#covariables.DF <- as.data.frame(covariables,xy=TRUE,na.rm=TRUE)
-ST.sp <- ST
-coordinates(ST.sp) <- ~x+y
-proj4string(ST.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-ST <- cbind(ST, extract(stclass, ST.sp))
-
-#intersectar puntos con los atributos de poligonos 
-ST.sp <- ST
-coordinates(ST.sp) <- ~x+y
-proj4string(ST.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-library(spatialEco)
-int <- point.in.poly(x=ST.sp,y=uhomo,sp=TRUE)
-int <- int@data
-int$extract.stclass..ST.sp. <- as.factor(int$extract.stclass..ST.sp.)
-int$Clave <- as.factor(int$Clave)
-
-#Prueba de independencia
-tb1 <- table(int$utaxo,int$extract.stclass..ST.sp.)
-round(prop.table(tb1,1)*100,2)
-chisq.test(tb1)
-
-tb2 <- table(int$uhomo,int$extract.stclass..ST.sp.)
-round(prop.table(tb2,1)*100,2)
-chisq.test(tb2)
-
-#Prueba de asociacion V de Cramer
+#Funcion para prueba de Pawlik o Chi2 corregigo
 library(DescTools)
-ContCoef(tb1) #Contingencia de Pearson
-CramerV(tb1)
-
-#De Pawlik (Pearson corregido)
 paw <- function(x,y){
   tabla <- table(x,y)
   CP <-ContCoef(tabla)
@@ -549,17 +537,26 @@ paw <- function(x,y){
   return(pawlik)
 }
 
-paw(int$utaxo,int$extract.stclass..ST.sp.)
-paw(int$uhomo,int$extract.stclass..ST.sp.)
-cmc <- function(x,y){
-  tabla <- table(x,y)
-  chi <- as.numeric(chisq.test(tabla)$sta)
-  n <- sum(tabla)
-  ccmc <- chi/n
-  return(ccmc)
-}
-cmc(int$utaxo,int$extract.stclass..ST.sp.)
-cmc(int$uhomo,int$extract.stclass..ST.sp.)
+#Prueba de independencia UHomogenea vs UCartografica
+table5 <- table(comp1$UCarto,comp1$uhomo)
+chisq.test(table5,simulate.p.value = TRUE)
+paw(comp1$UCarto,comp1$uhomo)
+
+#Prueba de independencia UTaxonomica vs UCartografica
+table6 <- table(comp1$UCarto,comp1$classrast)
+chisq.test(table6,simulate.p.value = TRUE)
+paw(comp1$UCarto,comp1$classrast)
+
+#Prueba de independencia UTaxonomica vs UHomogenea
+table7 <- table(comp1$uhomo,comp1$classrast)
+chisq.test(table7,simulate.p.value = TRUE)
+paw(comp1$uhomo,comp1$classrast)
+
+#Analisis de correspondencias simples
+library(FactoMineR)
+res.ca = CA(table(comp1$SimbUcar,comp1$classrast))
+summary(res.ca)
+
 #################################################################
 ##PLOT rasters
 #################################################################
@@ -593,17 +590,7 @@ levelplot(Probs,
           names.attr=nam[c(1,3,4,5)]) #+           
   layer(sp.polygons(uhomo, lwd=0.5))
 
-#Plot categorical data in levelplot#
-r <- ratify(rasterclass.ST)
-rat <- levels(r)[[1]]
-rat$Soil <- c('Aridic Haplustolls','Pachic Haplustolls','Sodic Haplocambids',
-         'Torriorthentic Haplustolls','Typic Haplocambids','Typic Torriorthents')
-levels(r) <- rat
-levelplot(r, col.regions=c("#00b144", "#ffff00", "#86b1ec","#0000ff", "#D2691E", "#BB0000"),
-          colorkey=list(
-            space='right'
-          ))
-#
+
 
 
 
