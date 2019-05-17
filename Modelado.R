@@ -556,7 +556,7 @@ paw(comp1$uhomo,comp1$classrast)
 library(FactoMineR)
 res.ca = CA(table(comp1$SimbUcar,comp1$classrast))
 summary(res.ca)
-
+plotellipses(res.ca,keepvar=c("classrast"))
 #################################################################
 ##PLOT rasters
 #################################################################
