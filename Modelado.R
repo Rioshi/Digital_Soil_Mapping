@@ -198,94 +198,128 @@ ks.test(x=scale(na.omit(organismos$ci)),y=scale(cali$ci))
 #Histograma / density plots POBLACION vs MUESTRA
 #AGREGAR PRUEBA KOLGOMOROV-SMIRNOFF para ver si provienen de la misma distribucion
 options("scipen"=100, "digits"=5)
+par(mfrow=c(2,2))
+
+jpeg("Imagenes/explora1.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
+par(mfrow=c(2,2))
 hist(na.omit(relieve$MDE),maxpixels=1500000,xlim=c(0,5000),main="Elevación",col="gray",
-     prob=TRUE,ylim=c(0,0.0005),xlab="ks:  D = 0.222   p-valor = 0.0036",ylab="Densidad",breaks=20, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.0005),xlab="ks:  D = 0.08   p-valor = 0.8635",ylab="Densidad",breaks=20, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$MDE),col="red",lwd = 3)
 
 hist(na.omit(relieve$Slope),maxpixels=1500000,xlim=c(0,200),main="Pendiente",col="gray",
-     prob=TRUE,ylim=c(0,0.02),xlab="ks:  D = 0.347   p-valor < 0.05",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.02),xlab="ks:  D = 0.07   p-valor = 0.90",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Slope),col="red",lwd = 3)
 
 hist(na.omit(relieve$Aspect),maxpixels=1500000,xlim=c(0,380),main="Orientación",col="gray",
-     prob=TRUE,ylim=c(0,0.006),xlab="ks:  D = 0.0511   p-valor > 0.05",ylab="Densidad", cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.006),xlab="ks:  D = 0.07   p-valor = 0.92",ylab="Densidad", cex.lab=2, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Aspect),col="red",lwd = 3)
 
 hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="Índice de Convergencia",col="gray",
-     prob=TRUE,ylim=c(0,0.15),xlab="ks:  D = 0.106   p-valor = 0.47",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.15),xlab="ks:  D = 0.23   p-valor < 0.01",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Convergence_Index,bw = "sj"),col="red",lwd = 3)
+dev.off()
 
+jpeg("Imagenes/explora2.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
+par(mfrow=c(2,2))
 hist(na.omit(relieve$Cross.Sectional_Curvature),maxpixels=1500000,xlim=c(-0.1,0.1),main="Curvatura plana",col="gray",
-     prob=TRUE,ylim=c(0,30),xlab="ks:  D = 0.124   p-valor = 0.28",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,30),xlab="ks:  D = 0.10   p-valor = 0.51",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Cross.Sectional_Curvature,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(relieve$Longitudinal_Curvature),maxpixels=1500000,xlim=c(-0.15,0.15),main="Curvatura de perfil",col="gray",
-     prob=TRUE,ylim=c(0,25),xlab="ks:  D = 0.125   p-valor = 0.273",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,25),xlab="ks:  D = 0.09   p-valor = 0.71",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Longitudinal_Curvature,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(relieve$LS_Factor),maxpixels=1500000,xlim=c(0,40),main="Factor LS",col="gray",
-     prob=TRUE,ylim=c(0,0.10),xlab="ks:  D = 0.125   p-valor = 0.273",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.10),xlab="ks:  D = 0.08   p-valor = 0.78",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$LS_Factor,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(relieve$Relative_Slope_Position),maxpixels=1500000,xlim=c(0,1),main="Posición relativa a la pendiente",col="gray",
-     prob=TRUE,ylim=c(0,10),xlab="ks:  D = 0.278   p-valor < 0.05",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,10),xlab="ks:  D = 0.36   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Relative_Slope_Position,bw = "sj"),col="red",lwd = 3)
+dev.off()
 
+jpeg("Imagenes/explora3.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
+par(mfrow=c(2,2))
 hist(na.omit(relieve$Topographic_Wetness_Index),maxpixels=1500000,xlim=c(0,20),main="Índice topográfico de humedad",col="gray",
-     prob=TRUE,ylim=c(0,0.4),xlab="ks:  D = 0.192   p-valor = 0.018",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.4),xlab="ks:  D = 0.15   p-valor = 0.14",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Topographic_Wetness_Index,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(relieve$Valley_Depth),maxpixels=1500000,xlim=c(0,700),main="Profundidad de los valles",col="gray",
-     prob=TRUE,ylim=c(0,0.008),xlab="ks:  D = 0.189   p-valor = 0.019",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.008),xlab="ks:  D = 0.16   p-valor = 0.09",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Valley_Depth,bw = "sj"),col="red",lwd = 3)
 
 ###########
 hist(na.omit(clima$tmean),maxpixels=1500000,xlim=c(5,18),main="Temperatura media anual",col="gray",
-     prob=TRUE,ylim=c(0,0.25),xlab="ks:  D = 0.130   p-valor = 0.191",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.25),xlab="ks:  D = 0.08   p-valor = 0.97",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$tmean,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(clima$ppt_acu),maxpixels=1500000,xlim=c(100,700),main="Precipitación anual acumulada",col="gray",
-     prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.161   p-valor = 0.282",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.28   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$ppt_acu,bw = "sj"),col="red",lwd = 3)
+dev.off()
 
+jpeg("Imagenes/explora4.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
+par(mfrow=c(2,2))
 hist(na.omit(clima$HS_acu),maxpixels=1500000,xlim=c(1050,1500),main="Evapotranspiración anual acumulada",col="gray",
-     prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.213   p-valor = 0.067",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.13   p-valor = 0.58",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$HS_acu,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(clima$wind),maxpixels=1500000,xlim=c(2.2,3.6),main="Velocidad del viento",col="gray",
-     prob=TRUE,ylim=c(0,4),xlab="ks:  D = 0.114   p-valor = 0.720",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,4),xlab="ks:  D = 0.11   p-valor = 0.72",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$wind,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(clima$Hd),maxpixels=1500000,xlim=c(0.5,1.6),main="Presión devapor de agua",col="gray",
-     prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.103   p-valor = 0.820",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.10   p-valor = 0.82",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Hd,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(clima$Rd),maxpixels=1500000,xlim=c(16200,18500),main="Radiación solar total anual",col="gray",
-     prob=TRUE,ylim=c(0,0.003),xlab="ks:  D = 0.243   p-valor = 0.023",ylab="Densidad",breaks=50, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,0.003),xlab="ks:  D = 0.24   p-valor = 0.02",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Rd,bw = "sj"),col="red",lwd = 3)
-
+dev.off()
 ##########
 
+jpeg("Imagenes/explora5.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
+par(mfrow=c(2,2))
 hist(na.omit(lito$qri),maxpixels=1500000,xlim=c(0.995,1.010),main="Índice de Cuarzo",col="gray",
-     prob=TRUE,ylim=c(0,350),xlab="ks:  D = 0.165   p-valor = 0.061",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,350),xlab="ks:  D = 0.08   p-valor = 0.76",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$qri,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(lito$carb),maxpixels=1500000,xlim=c(1,1.010),main="Índice de carbonatos",col="gray",
-     prob=TRUE,ylim=c(0,300),xlab="ks:  D = 0.171   p-valor = 0.047",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,300),xlab="ks:  D = 0.09   p-valor = 0.72",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$carb,bw = "sj"),col="red",lwd = 3)
 
 hist(na.omit(lito$mafic),maxpixels=1500000,xlim=c(0.98,1.01),main="Índice máfico",col="gray",
-     prob=TRUE,ylim=c(0,200),xlab="ks:  D = 0.152   p-valor = 0.106",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,200),xlab="ks:  D = 0.10   p-valor = 0.54",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$mafic,bw = "sj"),col="red",lwd = 3)
 ############
 
 hist(na.omit(organismos$ndvi),maxpixels=1500000,xlim=c(0,1),main="Índice Diferenciado de Vegetación Normalizado",col="gray",
-     prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.201   p-valor = 0.012",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.15   p-valor = 0.10",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$ndvi,bw = "sj"),col="red",lwd = 3)
+dev.off()
 
+jpeg("Imagenes/explora6.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
+par(mfrow=c(1,1))
 hist(na.omit(organismos$ci),maxpixels=1500000,xlim=c(0.5,2),main="Costra biológica",col="gray",
-     prob=TRUE,ylim=c(0,6),xlab="ks:  D = 0.266   p-valor < 0.05",ylab="Densidad",breaks=100, cex.lab=1.3,cex.main=1.3)
+     prob=TRUE,ylim=c(0,6),xlab="ks:  D = 0.10   p-valor = 0.52",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$ci,bw = "sj"),col="red",lwd = 3)
+dev.off()
 
+jpeg("Imagenes/cali_cov.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
+par(mfrow=c(2,2))
+hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="Índice de Convergencia",col="gray",
+     prob=TRUE,ylim=c(0,0.15),xlab="ks:  D = 0.23   p-valor < 0.01",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
+lines(density(cali$Convergence_Index,bw = "sj"),col="red",lwd = 3)
+hist(na.omit(relieve$Relative_Slope_Position),maxpixels=1500000,xlim=c(0,1),main="Posición relativa a la pendiente",col="gray",
+     prob=TRUE,ylim=c(0,10),xlab="ks:  D = 0.36   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
+lines(density(cali$Relative_Slope_Position,bw = "sj"),col="red",lwd = 3)
+hist(na.omit(clima$ppt_acu),maxpixels=1500000,xlim=c(100,700),main="Precipitación anual acumulada",col="gray",
+     prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.28   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
+lines(density(cali$ppt_acu,bw = "sj"),col="red",lwd = 3)
+hist(na.omit(clima$Rd),maxpixels=1500000,xlim=c(16200,18500),main="Radiación solar total anual",col="gray",
+     prob=TRUE,ylim=c(0,0.003),xlab="ks:  D = 0.24   p-valor = 0.02",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
+lines(density(cali$Rd,bw = "sj"),col="red",lwd = 3)
+dev.off()
 
 ######################################
 #MODELADO#
@@ -374,28 +408,6 @@ plotObj <- sortImp(vi, dim(vi$importance)[1])
 
 
 write.csv(vi$importance,file="importancivariable.csv")
-
-#boxplot variables comunes a los7 taxones
-p1 <- ggplot(cali, aes(x=ST,y=Topographic_Wetness_Index))+
-  geom_boxplot(fill="gray")  + scale_fill_grey()  +
-  theme(axis.text.y=element_text(face="bold"))+
-  xlab("") + ylab("Índice Topográfico de Humedad")
-
-p2 <- ggplot(cali, aes(x=ST,y=LS_Factor))+
-  geom_boxplot(fill="gray") + coord_flip() + scale_fill_grey()  +
-  theme(axis.text.y = element_blank())+
-  xlab("") + ylab("Factor LS")
-
-p3 <- ggplot(cali, aes(x=ST,y=mafic))+
-  geom_boxplot(fill="gray") + coord_flip() + scale_fill_grey()  + 
-  theme(axis.text.y = element_blank())+
-  xlab("") + ylab("Índice Máfico")
-
-library("gridExtra")
-grid.arrange(p1,p2,p3,ncol=3)
-grid.arrange(p1,                             # First row with one plot spaning over 2 columns
-             arrangeGrob(p2, p3, ncol = 2), # Second row with 2 plots in 2 different columns
-             nrow = 2)                       # Number of rows
 
 #Prediction of classes
 mm <- predict(object=covariables, model=modelcv, fun=predict, type="raw") #type raw = probability, prob = class
@@ -490,6 +502,8 @@ dev.off()
 #Graficar cada taxon de suelo con su importancia de la variable
 #################################################################
 #Cambiar taxon por taxon
+library(rasterVis)
+library(RColorBrewer)
 p1 <- ggplot(data=plotObj,aes(x=reorder(row.names(plotObj), plotObj$`Typic Torriorthents`),y=plotObj$`Typic Torriorthents`)) +
   geom_bar(stat="identity") + xlab("") +
   ylab("Importancia de la variable") + theme(axis.text.x=element_text(face="bold",size=12,angle = 90),
@@ -511,6 +525,16 @@ comp1 <- read.table("Unidades_homogeneas/INTERSEC_TAXA_UCARTO.txt",header = TRUE
 str(comp1); comp1$classrast <- as.factor(comp1$classrast) ; comp1$Clave <- as.factor(comp1$Clave)
 levels(comp1$UCarto)[levels(comp1$UCarto)=="Asociacion Cumb-Chacalla"] <- "Asociacion Salpin-Chacalla"
 levels(comp1$SimbUcar)[levels(comp1$SimbUcar)=="Cu-Ch"] <- "Sa-Ch"
+levels(comp1$classrast)[levels(comp1$classrast)=="1"] <- "FH"
+levels(comp1$classrast)[levels(comp1$classrast)=="2"] <- "LH"
+levels(comp1$classrast)[levels(comp1$classrast)=="3"] <- "LT"
+levels(comp1$classrast)[levels(comp1$classrast)=="4"] <- "SH"
+levels(comp1$classrast)[levels(comp1$classrast)=="5"] <- "TH"
+levels(comp1$classrast)[levels(comp1$classrast)=="6"] <- "TT"
+
+
+nam <- c("Fluventic Haplocambids","Lithic Haplocambids","Lithic Torriorthents","Sodic Haplocambids",
+         "Typic Haplocambids","Typic Torriorthents")
 
 
 #Datos frecuenciales con zonas de vida
@@ -553,125 +577,44 @@ chisq.test(table7,simulate.p.value = TRUE)
 paw(comp1$uhomo,comp1$classrast)
 
 #Analisis de correspondencias simples
-library(FactoMineR)
+library("FactoMineR")
+library("factoextra")
+library("gplots")
+
+table8 <- round(prop.table(table(comp1$SimbUcar,comp1$classrast))*100,2)
+dt <- as.table(as.matrix(table8))
+balloonplot(t(dt), main ="housetasks", xlab ="", ylab="",label=FALSE,
+            show.margins = FALSE,dotsize=3,scale.method="volume")
+
+
 res.ca = CA(table(comp1$SimbUcar,comp1$classrast))
 summary(res.ca)
-plotellipses(res.ca,keepvar=c("classrast"))
+jpeg("Imagenes/Correspondencias.jpeg", width = 20, height = 20, units = 'cm', res = 400, pointsize = 20)
+fviz_ca_biplot(res.ca, repel = TRUE,title="Análisis de Correspondencias")
+dev.off()
+
 #################################################################
 ##PLOT rasters
 #################################################################
 library(rasterVis)
 library(RColorBrewer)
 colr <- colorRampPalette(brewer.pal(11, 'RdYlBu'))
-nam <- c("Aridic Haplustolls","Pachic Haplustolls","Sodic Haplocambids","Torriorthentic Haplustolls",
+nam <- c("Fluventic Haplocambids","Lithic Haplocambids","Lithic Torriorthents","Sodic Haplocambids",
          "Typic Haplocambids","Typic Torriorthents")
+leg.col <- list(space='right',labels=list(at=seq(0,1,by=0.2), font=4),axis.line=list(col='black'),width=1)
 
+jpeg("Imagenes/Taxa_compilado.jpeg", width = 25, height = 17, units = 'cm', res = 600, pointsize = 600)
+rasterVis::levelplot(Probs,layout=c(3,2),col.regions=colr,
+                     scales=list(draw=FALSE),names.attr=nam,colorkey=leg.col,par.strip.text=list(
+                       cex=1.5
+                     ))
+dev.off()
 
-levelplot(Probs, 
-          margin=TRUE,   
-          layers=c(1,3,4,5),
-          colorkey=list(
-            space='right',                   
-            labels=list(at=seq(0,1,by=0.2), font=4),
-            axis.line=list(col='black'),
-            width=1
-          ),  
-          par.settings=list(
-            strip.border=list(col='black'),
-            strip.background=list(col='transparent'),
-            axis.line=list(col='transparent')
-          ),
-          scales=list(draw=FALSE),  
-          par.strip.text=list(
-            cex=1.5
-          ),
-          col.regions=colr,                   
-          at=seq(0,1, len=101),
-          names.attr=nam[c(1,3,4,5)]) #+           
-  layer(sp.polygons(uhomo, lwd=0.5))
-
-
-
-
-
-levelplot(Probs,par.settings = RdBuTheme, layers=c(2,6),
-#          layout=c(3, 2),
-          xlab=NULL, ylab=NULL, scales=list(draw=FALSE)
-#          names.attr= nam
-          )
-
-
-levelplot(Probs, layers = 1,margin = list(FUN = 'mean'), contour=TRUE,par.settings = magmaTheme)
-
-levelplot(Probs, layers = 1, margin = list(FUN = 'mean'), contour=TRUE,par.settings = magmaTheme)
-
-levelplot(Probs, layers = 5,par.settings = plasmaTheme)
-levelplot(Probs, layers = 5,par.settings = magmaTheme)
-levelplot(Probs, layers = 5,par.settings = rasterTheme)
-levelplot(Probs, layers = 5,par.settings = PuOrTheme)
-levelplot(Probs, layers = 5,par.settings = RdBuTheme)
-levelplot(Probs, layers = 5,par.settings = streamTheme)
-levelplot(Probs, layers = 5,par.settings = viridisTheme)
-#levelplot(Probs, layers = 5,par.settings = xscale.raster)
-#levelplot(Probs, layers = 5,par.settings = xscale.raster.subticks)
-levelplot(Probs, layers = 5,par.settings = YlOrRdTheme)
-#levelplot(Probs, layers = 5,par.settings = yscale.raster)
-#levelplot(Probs, layers = 5,par.settings = yscale.raster.subticks)
-
-
-
-###Resultados
-layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE), 
-       widths=c(1,1), heights=c(1,1))
-
-layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE), 
-       widths=c(1,1), heights=c(1,1))
-
-################################################
-
-####Balanceo alternativo
-#set.seed(9560)
-#down_train <- downSample(x = cali[,5:25],
-#                         y = cali$ST)
-set.seed(9560)
-up_train <- upSample(x = cali[,5:25],
-                     y = cali$ST)
-
-#library(DMwR)
-#set.seed(111)
-#smote_train  <- SMOTE(ST~.,data=cali[,4:25])                         
-#table(smote_train$Class) 
-
-#library(ROSE)
-#set.seed(9560)
-#rose_train <- ROSE(ST~.,data=cali[,4:25])
-
-
-#################################################################
-# Actualizacion de unidades cartograficas
-#################################################################
-library(googlesheets)
-library(ggplot2)
-library(dplyr)
-library(gridExtra)
-library(ggpubr)
-gs_auth()
-my_sheets <- gs_ls()
-gap <- gs_title("Analisis")
-act <- gap %>%
-  gs_read(ws = "Actualiza")
-act <- as.data.frame(act)
-act$Subgrupo <- as.factor(act$Subgrupo)
-
-df <- subset(act,UC=="Va")
-p2 <-ggplot(data=df, aes(x=Subgrupo, y=Cobertura, fill=Tipo)) +
-  geom_bar(stat="identity", color="black", position=position_dodge())+
-  theme_minimal() + scale_fill_manual(values=c('#999999','#E69F00')) +
-  theme(axis.text=element_text(size=12),
-        axis.title.x = element_text(face="bold"),
-        axis.title.y = element_text(face="bold"))+
-  ylab("Área Cubierta (%)") + xlab("")+
-  guides(fill=guide_legend(title=NULL))
-jpeg("H:/TESIS/2018/Imagenes/actualiza.jpeg", width = 15, height = 20, units = 'cm', res = 300)
-ggarrange(p1,p2, ncol=1,nrow=2, common.legend = TRUE, legend="bottom")
+jpeg("Imagenes/Vimp_compilado.jpeg", width = 25, height = 17, units = 'cm', res = 600, pointsize = 20)
+ggplot(vi) + xlab("Covariables - Factores de formación de suelos") +
+  ylab("Importancia de la Variable") +
+  theme(axis.text = element_text(size=11.5),
+        strip.text = element_text(size = 12, face="bold"), 
+        axis.title.x = element_text(size=12, face="bold"),
+        axis.title.y = element_text(size=12, face="bold"))
 dev.off()
