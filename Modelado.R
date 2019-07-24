@@ -3,7 +3,9 @@
 #####################
 library(raster)
 library(caret)
-setwd("H:/TESIS/2018")
+setwd("I:/TESIS/2018")
+
+rm(list = ls())
 
 #Lectura de covariables RELIEVE
 startdir <- getwd()
@@ -396,13 +398,14 @@ colnames(vi$importance) <- c("Fluventic Haplocambids", "Lithic Haplocambids","Li
 rownames(vi$importance) <- c("ET","PPT","TM","WS","WVP","RS","QI","CI","MI","NDVI","CB","OR","ICO",
                              "CPP","CPL","LS","MDE","RSP","PD","TWI","VD")
 plot(vi)
-ggplot(vi) + xlab("Covariables - Factores de formación de suelos") +
-  ylab("Importancia de la Variable") +
+jpeg("Imagenes/varimptot.jpeg", width = 15, height = 15, units = 'cm', res = 400)
+ggplot(vi) + xlab("Variables Predictoras") +
+  ylab("Importancia de la Variable (0 - 100") +
   theme(axis.text = element_text(size=11.5),
         strip.text = element_text(size = 12, face="bold"), 
         axis.title.x = element_text(size=12, face="bold"),
         axis.title.y = element_text(size=12, face="bold"))
-
+dev.off()
 #para mas info https://github.com/topepo/caret/blob/master/pkg/caret/R/plot.varImp.train.R
 plotObj <- sortImp(vi, dim(vi$importance)[1])
 
@@ -544,7 +547,7 @@ prop.table(table1,margin=1)*100
 table2 <- table(comp$classrast,comp$NAME)
 prop.table(table2,margin=1)*100
 #Datos frecuenciales con uhomo
-table3 <- table(comp$classrast,comp$uhomo)
+table3 <- table(comp1$classrast,comp$uhomo)
 prop.table(table3,margin=1)*100
 #Datos frecuenciales con Unidades Cartograficas
 table4 <- table(comp1$UCarto,comp1$classrast)
@@ -587,12 +590,15 @@ balloonplot(t(dt), main ="housetasks", xlab ="", ylab="",label=FALSE,
             show.margins = FALSE,dotsize=3,scale.method="volume")
 
 
-res.ca = CA(table(comp1$SimbUcar,comp1$classrast))
+res.ca = CA(X=as.data.frame.matrix(table(comp1$SimbUcar,comp1$classrast)))
 summary(res.ca)
 jpeg("Imagenes/Correspondencias.jpeg", width = 20, height = 20, units = 'cm', res = 400, pointsize = 20)
 fviz_ca_biplot(res.ca, repel = TRUE,title="Análisis de Correspondencias")
 dev.off()
 
+res.ca = CA(as.data.frame.matrix(table(comp1$uhomo,comp1$classrast)))
+summary(res.ca)
+ellipseCA(res.ca,method="boot")
 #################################################################
 ##PLOT rasters
 #################################################################
