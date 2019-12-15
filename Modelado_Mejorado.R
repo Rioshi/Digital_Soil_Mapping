@@ -36,12 +36,26 @@ proj4string(cali.sp) <- CRS("+proj=utm +zone=18 +south +ellps=WGS84 +datum=WGS84
 cali <- cbind(cali, extract(covariables, cali.sp))
 cali <- cali[,4:25]
 
-##################################
-### Modelamiento VGAM ############
-##################################
-md1 <- vglm(formula = ST ~ .,family =  multinomial, data = cali)
-summary(md1)
 
+
+
+##################################
+### Modelamiento LOGISTIC ########
+##################################
+hiperparametros <- data.frame(parameter = "none")
+control_train <- trainControl(method = "repeatedcv", number = particiones,
+                              repeats = repeticiones,
+                              classProbs = TRUE, 
+                              summaryFunction = twoClassSummary, 
+                              returnResamp = "final", verboseIter = FALSE, 
+                              allowParallel = TRUE) #para que trabaje en paralelo
+
+modelo_logistic <- train(ST ~ ., data = cali,
+                         method = "glm",
+                         tuneGrid = hiperparametros,
+                         metric = "ROC",
+                         trControl = control_train,
+                         family = "binomial")
 ##################################
 ### Modelamiento nnet ############
 ##################################
