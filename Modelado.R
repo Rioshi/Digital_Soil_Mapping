@@ -3,7 +3,7 @@
 #####################
 library(raster)
 library(caret)
-setwd("I:/TESIS/2018")
+setwd("F:/TESIS/2018")
 
 rm(list = ls())
 
@@ -88,6 +88,7 @@ relieve2 <- resample(relieve,organismos$ndvi, method="bilinear")
 clima2 <- resample(clima,organismos$ndvi, method="bilinear")
 lito2 <- resample(lito,organismos$ndvi, method="bilinear")
 covariables <- stack(organismos,relieve2,clima2,lito2)
+saveRDS(covariables, file = "F:/TESIS/2018/RDATA/covariables.rds")
 
 #######################################################
 ## ANALISIS EXPLORATORIO DE DATOS
@@ -120,7 +121,6 @@ names(covariables) <- c("NDVI","CB","OR","ICO","CPP","CPL","LS","MDE","RSP","PD"
 options("scipen"=100, "digits"=5)
 covar.corr <- layerStats(covariables,stat="pearson",na.rm = TRUE,asSample = FALSE)
 write.csv(covar.corr$`pearson correlation coefficient`,file="cormatrix.csv")
-
 library(corrplot)
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 #col1 <- colorRampPalette(c("#7F0000", "red", "#FF7F00", "yellow", "white",
@@ -157,7 +157,7 @@ rasterVis::levelplot(covariables, layers = c(19:21), contour=FALSE,
 #indices de relieve
 rasterVis::levelplot(covariables, layers = c(5,6), contour=FALSE,
                      par.settings = magmaTheme, xlim=c(324705,340000),ylim=c(8682745,8695000))
-r2<-rasterVis::levelplot(covariables, layers = c(13,14), contour=FALSE,margin=FALSE,main="Índice de Cuarzos",
+r2<-rasterVis::levelplot(covariables, layers = c(13,14), contour=FALSE,margin=FALSE,main="?ndice de Cuarzos",
                      par.settings = RdBuTheme, xlim=c(324705,340000),ylim=c(8682745,8695000),
                      colorkey=list(
                        space='bottom',                   
@@ -204,7 +204,7 @@ par(mfrow=c(2,2))
 
 jpeg("Imagenes/explora1.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
 par(mfrow=c(2,2))
-hist(na.omit(relieve$MDE),maxpixels=1500000,xlim=c(0,5000),main="Elevación",col="gray",
+hist(na.omit(relieve$MDE),maxpixels=1500000,xlim=c(0,5000),main="Elevaci?n",col="gray",
      prob=TRUE,ylim=c(0,0.0005),xlab="ks:  D = 0.08   p-valor = 0.8635",ylab="Densidad",breaks=20, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$MDE),col="red",lwd = 3)
 
@@ -212,11 +212,11 @@ hist(na.omit(relieve$Slope),maxpixels=1500000,xlim=c(0,200),main="Pendiente",col
      prob=TRUE,ylim=c(0,0.02),xlab="ks:  D = 0.07   p-valor = 0.90",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Slope),col="red",lwd = 3)
 
-hist(na.omit(relieve$Aspect),maxpixels=1500000,xlim=c(0,380),main="Orientación",col="gray",
+hist(na.omit(relieve$Aspect),maxpixels=1500000,xlim=c(0,380),main="Orientaci?n",col="gray",
      prob=TRUE,ylim=c(0,0.006),xlab="ks:  D = 0.07   p-valor = 0.92",ylab="Densidad", cex.lab=2, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Aspect),col="red",lwd = 3)
 
-hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="Índice de Convergencia",col="gray",
+hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="?ndice de Convergencia",col="gray",
      prob=TRUE,ylim=c(0,0.15),xlab="ks:  D = 0.23   p-valor < 0.01",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Convergence_Index,bw = "sj"),col="red",lwd = 3)
 dev.off()
@@ -235,14 +235,14 @@ hist(na.omit(relieve$LS_Factor),maxpixels=1500000,xlim=c(0,40),main="Factor LS",
      prob=TRUE,ylim=c(0,0.10),xlab="ks:  D = 0.08   p-valor = 0.78",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$LS_Factor,bw = "sj"),col="red",lwd = 3)
 
-hist(na.omit(relieve$Relative_Slope_Position),maxpixels=1500000,xlim=c(0,1),main="Posición relativa a la pendiente",col="gray",
+hist(na.omit(relieve$Relative_Slope_Position),maxpixels=1500000,xlim=c(0,1),main="Posici?n relativa a la pendiente",col="gray",
      prob=TRUE,ylim=c(0,10),xlab="ks:  D = 0.36   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Relative_Slope_Position,bw = "sj"),col="red",lwd = 3)
 dev.off()
 
 jpeg("Imagenes/explora3.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
 par(mfrow=c(2,2))
-hist(na.omit(relieve$Topographic_Wetness_Index),maxpixels=1500000,xlim=c(0,20),main="Índice topográfico de humedad",col="gray",
+hist(na.omit(relieve$Topographic_Wetness_Index),maxpixels=1500000,xlim=c(0,20),main="?ndice topogr?fico de humedad",col="gray",
      prob=TRUE,ylim=c(0,0.4),xlab="ks:  D = 0.15   p-valor = 0.14",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Topographic_Wetness_Index,bw = "sj"),col="red",lwd = 3)
 
@@ -255,14 +255,14 @@ hist(na.omit(clima$tmean),maxpixels=1500000,xlim=c(5,18),main="Temperatura media
      prob=TRUE,ylim=c(0,0.25),xlab="ks:  D = 0.08   p-valor = 0.97",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$tmean,bw = "sj"),col="red",lwd = 3)
 
-hist(na.omit(clima$ppt_acu),maxpixels=1500000,xlim=c(100,700),main="Precipitación anual acumulada",col="gray",
+hist(na.omit(clima$ppt_acu),maxpixels=1500000,xlim=c(100,700),main="Precipitaci?n anual acumulada",col="gray",
      prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.28   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$ppt_acu,bw = "sj"),col="red",lwd = 3)
 dev.off()
 
 jpeg("Imagenes/explora4.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
 par(mfrow=c(2,2))
-hist(na.omit(clima$HS_acu),maxpixels=1500000,xlim=c(1050,1500),main="Evapotranspiración anual acumulada",col="gray",
+hist(na.omit(clima$HS_acu),maxpixels=1500000,xlim=c(1050,1500),main="Evapotranspiraci?n anual acumulada",col="gray",
      prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.13   p-valor = 0.58",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$HS_acu,bw = "sj"),col="red",lwd = 3)
 
@@ -270,11 +270,11 @@ hist(na.omit(clima$wind),maxpixels=1500000,xlim=c(2.2,3.6),main="Velocidad del v
      prob=TRUE,ylim=c(0,4),xlab="ks:  D = 0.11   p-valor = 0.72",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$wind,bw = "sj"),col="red",lwd = 3)
 
-hist(na.omit(clima$Hd),maxpixels=1500000,xlim=c(0.5,1.6),main="Presión devapor de agua",col="gray",
+hist(na.omit(clima$Hd),maxpixels=1500000,xlim=c(0.5,1.6),main="Presi?n devapor de agua",col="gray",
      prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.10   p-valor = 0.82",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Hd,bw = "sj"),col="red",lwd = 3)
 
-hist(na.omit(clima$Rd),maxpixels=1500000,xlim=c(16200,18500),main="Radiación solar total anual",col="gray",
+hist(na.omit(clima$Rd),maxpixels=1500000,xlim=c(16200,18500),main="Radiaci?n solar total anual",col="gray",
      prob=TRUE,ylim=c(0,0.003),xlab="ks:  D = 0.24   p-valor = 0.02",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Rd,bw = "sj"),col="red",lwd = 3)
 dev.off()
@@ -282,43 +282,43 @@ dev.off()
 
 jpeg("Imagenes/explora5.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
 par(mfrow=c(2,2))
-hist(na.omit(lito$qri),maxpixels=1500000,xlim=c(0.995,1.010),main="Índice de Cuarzo",col="gray",
+hist(na.omit(lito$qri),maxpixels=1500000,xlim=c(0.995,1.010),main="?ndice de Cuarzo",col="gray",
      prob=TRUE,ylim=c(0,350),xlab="ks:  D = 0.08   p-valor = 0.76",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$qri,bw = "sj"),col="red",lwd = 3)
 
-hist(na.omit(lito$carb),maxpixels=1500000,xlim=c(1,1.010),main="Índice de carbonatos",col="gray",
+hist(na.omit(lito$carb),maxpixels=1500000,xlim=c(1,1.010),main="?ndice de carbonatos",col="gray",
      prob=TRUE,ylim=c(0,300),xlab="ks:  D = 0.09   p-valor = 0.72",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$carb,bw = "sj"),col="red",lwd = 3)
 
-hist(na.omit(lito$mafic),maxpixels=1500000,xlim=c(0.98,1.01),main="Índice máfico",col="gray",
+hist(na.omit(lito$mafic),maxpixels=1500000,xlim=c(0.98,1.01),main="?ndice m?fico",col="gray",
      prob=TRUE,ylim=c(0,200),xlab="ks:  D = 0.10   p-valor = 0.54",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$mafic,bw = "sj"),col="red",lwd = 3)
 ############
 
-hist(na.omit(organismos$ndvi),maxpixels=1500000,xlim=c(0,1),main="Índice Diferenciado de Vegetación Normalizado",col="gray",
+hist(na.omit(organismos$ndvi),maxpixels=1500000,xlim=c(0,1),main="?ndice Diferenciado de Vegetaci?n Normalizado",col="gray",
      prob=TRUE,ylim=c(0,3),xlab="ks:  D = 0.15   p-valor = 0.10",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$ndvi,bw = "sj"),col="red",lwd = 3)
 dev.off()
 
 jpeg("Imagenes/explora6.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
 par(mfrow=c(1,1))
-hist(na.omit(organismos$ci),maxpixels=1500000,xlim=c(0.5,2),main="Costra biológica",col="gray",
+hist(na.omit(organismos$ci),maxpixels=1500000,xlim=c(0.5,2),main="Costra biol?gica",col="gray",
      prob=TRUE,ylim=c(0,6),xlab="ks:  D = 0.10   p-valor = 0.52",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$ci,bw = "sj"),col="red",lwd = 3)
 dev.off()
 
 jpeg("Imagenes/cali_cov.jpeg", width = 30, height = 20, units = 'cm', res = 600, pointsize = 20)
 par(mfrow=c(2,2))
-hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="Índice de Convergencia",col="gray",
+hist(na.omit(relieve$Convergence_Index),maxpixels=1500000,xlim=c(-20,20),main="?ndice de Convergencia",col="gray",
      prob=TRUE,ylim=c(0,0.15),xlab="ks:  D = 0.23   p-valor < 0.01",ylab="Densidad",breaks=100, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Convergence_Index,bw = "sj"),col="red",lwd = 3)
-hist(na.omit(relieve$Relative_Slope_Position),maxpixels=1500000,xlim=c(0,1),main="Posición relativa a la pendiente",col="gray",
+hist(na.omit(relieve$Relative_Slope_Position),maxpixels=1500000,xlim=c(0,1),main="Posici?n relativa a la pendiente",col="gray",
      prob=TRUE,ylim=c(0,10),xlab="ks:  D = 0.36   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Relative_Slope_Position,bw = "sj"),col="red",lwd = 3)
-hist(na.omit(clima$ppt_acu),maxpixels=1500000,xlim=c(100,700),main="Precipitación anual acumulada",col="gray",
+hist(na.omit(clima$ppt_acu),maxpixels=1500000,xlim=c(100,700),main="Precipitaci?n anual acumulada",col="gray",
      prob=TRUE,ylim=c(0,0.01),xlab="ks:  D = 0.28   p-valor < 0.01",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$ppt_acu,bw = "sj"),col="red",lwd = 3)
-hist(na.omit(clima$Rd),maxpixels=1500000,xlim=c(16200,18500),main="Radiación solar total anual",col="gray",
+hist(na.omit(clima$Rd),maxpixels=1500000,xlim=c(16200,18500),main="Radiaci?n solar total anual",col="gray",
      prob=TRUE,ylim=c(0,0.003),xlab="ks:  D = 0.24   p-valor = 0.02",ylab="Densidad",breaks=50, cex.lab=1.5,cex.main=1.5,cex.axis=1.0)
 lines(density(cali$Rd,bw = "sj"),col="red",lwd = 3)
 dev.off()
@@ -593,7 +593,7 @@ balloonplot(t(dt), main ="housetasks", xlab ="", ylab="",label=FALSE,
 res.ca = CA(X=as.data.frame.matrix(table(comp1$SimbUcar,comp1$classrast)))
 summary(res.ca)
 jpeg("Imagenes/Correspondencias.jpeg", width = 20, height = 20, units = 'cm', res = 400, pointsize = 20)
-fviz_ca_biplot(res.ca, repel = TRUE,title="Análisis de Correspondencias")
+fviz_ca_biplot(res.ca, repel = TRUE,title="An?lisis de Correspondencias")
 dev.off()
 
 res.ca = CA(as.data.frame.matrix(table(comp1$uhomo,comp1$classrast)))
@@ -617,7 +617,7 @@ rasterVis::levelplot(Probs,layout=c(3,2),col.regions=colr,
 dev.off()
 
 jpeg("Imagenes/Vimp_compilado.jpeg", width = 25, height = 17, units = 'cm', res = 600, pointsize = 20)
-ggplot(vi) + xlab("Covariables - Factores de formación de suelos") +
+ggplot(vi) + xlab("Covariables - Factores de formaci?n de suelos") +
   ylab("Importancia de la Variable") +
   theme(axis.text = element_text(size=11.5),
         strip.text = element_text(size = 12, face="bold"), 
